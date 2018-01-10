@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SmartPlug.iml" filepath="$PROJECT_DIR$/SmartPlug.iml" />
+      <module fileurl="file://C:\Users\pc\Desktop\SmartPlug-master\SmartPlug\SmartPlug\SmartPlug.iml" filepath="C:\Users\pc\Desktop\SmartPlug-master\SmartPlug\SmartPlug\SmartPlug.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\pc\Desktop\SmartPlug-master\SmartPlug\SmartPlug\app\app.iml" filepath="C:\Users\pc\Desktop\SmartPlug-master\SmartPlug\SmartPlug\app\app.iml" />
     </modules>
   </component>
 </project>
