@@ -7,5 +7,24 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.thesis.bmm.smartplug.MainActivity"
     tools:showIn="@layout/activity_main">
+<TextView
+    android:id="@+id/tw"
+    android:text="PRİZLERİM"
+    android:gravity="center"
+    android:textSize="25dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/prizler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tw"
+        app:layout_constraintVertical_bias="0.040"
+        app:layout_constraintLeft_toLeftOf="@+id/tw"
+        >
+
+    </ListView>
 
 </android.support.constraint.ConstraintLayout>
