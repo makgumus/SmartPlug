@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.thesis.bmm.smartplug.NewPlugActivity">
+    tools:context="com.thesis.bmm.smartplug.activities.NewPlugActivity">
     <TextView
-        android:text="ODA  SEÇİNİZ"
-        android:textSize="19dp"
-        android:layout_margin="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="ODA  SEÇİNİZ"
+        android:textSize="19dp" />
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,11 +22,11 @@
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
 
                     android:id="@+id/button0"
@@ -42,11 +41,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
 
                     android:id="@+id/button1"
@@ -60,11 +59,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
 
                     android:id="@+id/button2"
@@ -78,11 +77,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
 
                     android:id="@+id/button3"
@@ -96,11 +95,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
 
                     android:id="@+id/button4"
@@ -114,11 +113,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
                     android:id="@+id/button5"
                     android:layout_width="90dp"
@@ -131,11 +130,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
 
                     android:id="@+id/button6"
@@ -154,28 +153,28 @@
     </HorizontalScrollView>
 
     <TextView
-        android:text="PRİZ ADI"
-        android:textSize="19dp"
-        android:layout_margin="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="PRİZ ADI"
+        android:textSize="19dp" />
     <EditText
         android:id="@+id/prizadi"
-        android:text="Priz 1"
-        android:textSize="19dp"
-        android:enabled="false"
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:enabled="false"
+        android:text="Priz 1"
+        android:textSize="19dp" />
     <Button
-        android:layout_marginRight="5dp"
-        android:layout_gravity="end"
         android:id="@+id/Ekle"
-        android:textSize="20dp"
-        android:fontFamily="monospace"
-        android:background="@drawable/button"
-        android:text="EKLE"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/button"
+        android:fontFamily="monospace"
+        android:text="EKLE"
+        android:textSize="20dp" />
 
 </LinearLayout>

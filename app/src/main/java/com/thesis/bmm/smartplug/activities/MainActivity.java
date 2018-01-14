@@ -1,14 +1,15 @@
-package com.thesis.bmm.smartplug;
+package com.thesis.bmm.smartplug.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -18,11 +19,13 @@ import com.thesis.bmm.smartplug.adapter.CustomAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
-    ListView list;
-    ArrayList<HashMap<String, String>> newItemlist = new ArrayList<HashMap<String, String>>();
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
     private static final String TAG_NAME = "Priz";
     private static final String TAG_DESCRIPTION = "AkımDegeri";
+    ListView list;
+    ArrayList<HashMap<String, String>> newItemlist = new ArrayList<HashMap<String, String>>();
+    private TabLayout tabLayout = null;
+    private ViewPager vpFragments = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -62,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(cus);
     }
 
+    private void initView() {
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -77,4 +83,33 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
 }

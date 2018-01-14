@@ -1,13 +1,9 @@
-package com.thesis.bmm.smartplug;
+package com.thesis.bmm.smartplug.activities;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.Toast;
 
 public class NewPlugActivity extends AppCompatActivity {
     @Override

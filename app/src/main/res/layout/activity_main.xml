@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.thesis.bmm.smartplug.MainActivity">
+    tools:context="com.thesis.bmm.smartplug.activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -20,6 +20,15 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <android.support.design.widget.TabLayout
+        android:id="@+id/activity_main_tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/activity_main_vpFragments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <include layout="@layout/content_main" />
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/fab"
@@ -29,8 +38,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/colorAccent"
         android:text="ADD NEW DEVİCE"
-        android:textSize="16dp"
         android:textColor="@color/beyaz"
+        android:textSize="16dp"
         app:srcCompat="@drawable/ic_power_settings_new_black_24dp"/>
 
 

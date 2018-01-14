@@ -6,4 +6,7 @@
         <item>1 yada 2 kez</item>
         <item>2den fazla</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
