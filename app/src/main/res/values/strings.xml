@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">SmartPlug</string>
     <string name="action_settings">Settings</string>
+    <string-array name="su_sıklıgı">
+        <item>Hiç</item>
+        <item>1 yada 2 kez</item>
+        <item>2den fazla</item>
+    </string-array>
 </resources>
