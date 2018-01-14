@@ -14,12 +14,13 @@ import android.widget.TextView;
 import com.thesis.bmm.smartplug.R;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class CustomAdapter extends BaseAdapter
 {
     LayoutInflater mInlfater;
     ArrayList<HashMap<String,String>> list;
-    public CustomAdapter(Context context, ArrayList<HashMap<String,String>> list)
+    public CustomAdapter(Context context, ArrayList<HashMap<String, String>> list)
     {
         mInlfater = LayoutInflater.from(context);
         this.list =list;
@@ -50,9 +51,9 @@ public class CustomAdapter extends BaseAdapter
         {
             convertView = mInlfater.inflate(R.layout.list_item,null);
             holder = new ViewHolder();
-            holder.b1 = (FloatingActionButton)convertView.findViewById(R.id.button1);
-            holder.tv1 = (TextView)convertView.findViewById(R.id.textView1);
-            holder.tv2 = (TextView)convertView.findViewById(R.id.textView2);
+            holder.b1 = convertView.findViewById(R.id.sw);
+            holder.tv1 = convertView.findViewById(R.id.textView1);
+            holder.tv2 = convertView.findViewById(R.id.textView2);
             convertView.setTag(holder);
         }
         else
@@ -65,14 +66,14 @@ public class CustomAdapter extends BaseAdapter
         holder.b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.b1.setRippleColor(Color.BLACK);
+
             }
         });
         return convertView;
     }
     static class ViewHolder
     {
-        FloatingActionButton b1;
+        SwitchCompat b1;
         TextView tv1,tv2,tv3;
     }
 }

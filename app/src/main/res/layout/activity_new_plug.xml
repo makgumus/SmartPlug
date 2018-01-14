@@ -9,172 +9,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="ODA  SEÇİNİZ"
-        android:textSize="19dp" />
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scrollbarSize="0dp"
-        >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+        android:text="@string/odasecim"
+        android:textSize="20sp" />
+    <Spinner
+        android:id="@+id/spinner"
+        android:entries="@array/array_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <ImageView
-
-                    android:id="@+id/button0"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:src="@drawable/oturmaodasi"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Oturma Odası" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <ImageView
-
-                    android:id="@+id/button1"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:src="@drawable/yatakodasi"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Yatak Odası" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <ImageView
-
-                    android:id="@+id/button2"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:src="@drawable/mutfak" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mutfak" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <ImageView
-
-                    android:id="@+id/button3"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:src="@drawable/cocukodasi" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Çocuk Odası" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <ImageView
-
-                    android:id="@+id/button4"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:src="@drawable/koridor" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Koridor" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <ImageView
-                    android:id="@+id/button5"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:src="@drawable/banyo" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Lavabo" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <ImageView
-
-                    android:id="@+id/button6"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:src="@drawable/ekstraoda" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ekstra Oda" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
-
+    </Spinner>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="PRİZ ADI"
-        android:textSize="19dp" />
+        android:text="@string/prizadi"
+        android:textSize="19sp" />
     <EditText
         android:id="@+id/prizadi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:enabled="false"
-        android:text="Priz 1"
-        android:textSize="19dp" />
+        android:text="@string/prizadi"
+        android:textSize="19sp" />
     <Button
         android:id="@+id/Ekle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
         android:background="@drawable/button"
-        android:fontFamily="monospace"
-        android:text="EKLE"
-        android:textSize="20dp" />
+        android:text="@string/ekle"
+        android:textSize="20sp" />
 
 </LinearLayout>
