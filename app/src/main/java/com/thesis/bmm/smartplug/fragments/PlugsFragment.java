@@ -20,7 +20,7 @@ import java.util.List;
  * {@link PlugsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link PlugsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * create an instance of this fragment.fg
  */
 public class PlugsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
