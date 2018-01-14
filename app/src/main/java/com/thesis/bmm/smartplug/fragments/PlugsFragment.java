@@ -7,8 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ListView;
 import com.thesis.bmm.smartplug.R;
+import com.thesis.bmm.smartplug.adapter.CustomAdapter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,33 +20,23 @@ import com.thesis.bmm.smartplug.R;
  * {@link PlugsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link PlugsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * create an instance of this fragment.fg
  */
 public class PlugsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
+    private static final String TAG_NAME = "Priz";
+    private static final String TAG_DESCRIPTION = "AkımDegeri";
+    ListView list;
+    ArrayList<HashMap<String, String>> newItemlist;
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     public PlugsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PlugsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PlugsFragment newInstance(String param1, String param2) {
         PlugsFragment fragment = new PlugsFragment();
         Bundle args = new Bundle();
@@ -51,7 +45,6 @@ public class PlugsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,21 +53,36 @@ public class PlugsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_plugs, container, false);
-    }
+        newItemlist = new ArrayList<HashMap<String, String>>();
+        String name="Priz1";
+        String name2="Priz2";
+        String description="Akım Degeri";
+        String description2="Akım Degeri2";
 
-    // TODO: Rename method, update argument and hook method into UI event
+        HashMap<String, String> map = new HashMap<String, String>();  //Daha sonra veri tabanından gelicek.
+        map.put(TAG_NAME, name);
+        map.put(TAG_DESCRIPTION, description);
+        newItemlist.add(map);
+
+        HashMap<String, String> map2 = new HashMap<String, String>();
+        map2.put(TAG_NAME, name2);
+        map2.put(TAG_DESCRIPTION, description2);
+        newItemlist.add(map2);
+        View view = inflater.inflate(R.layout.fragment_plugs, container, false);
+        list=view.findViewById(R.id.prizler);
+        CustomAdapter cus = new CustomAdapter(getActivity(),newItemlist);
+        list.setAdapter(cus);
+        return inflater.inflate(R.layout.fragment_plugs, container, false);
+
+    }
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -85,23 +93,11 @@ public class PlugsFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

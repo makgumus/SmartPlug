@@ -30,17 +30,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <include layout="@layout/content_main" />
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="@color/colorAccent"
-        android:text="ADD NEW DEVİCE"
-        android:textColor="@color/beyaz"
-        android:textSize="16dp"
-        app:srcCompat="@drawable/ic_power_settings_new_black_24dp"/>
-
 
 </android.support.design.widget.CoordinatorLayout>
