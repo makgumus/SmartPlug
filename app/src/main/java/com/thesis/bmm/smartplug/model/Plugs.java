@@ -9,13 +9,13 @@ public class Plugs {
     private String plugName;
     private String plugRoom;
     private String plugCurrent;
-    private String plugStatus;
+    private Boolean plugStatus;
 
     public Plugs() {
 
     }
 
-    public Plugs(String plugID, String plugName, String plugRoom, String plugCurrent, String plugStatus) {
+    public Plugs(String plugID, String plugName, String plugRoom, String plugCurrent, Boolean plugStatus) {
 
         this.plugID = plugID;
         this.plugName = plugName;
@@ -56,11 +56,11 @@ public class Plugs {
         this.plugCurrent = plugCurrent;
     }
 
-    public String getPlugStatus() {
+    public Boolean getPlugStatus() {
         return plugStatus;
     }
 
-    public void setPlugStatus(String plugStatus) {
+    public void setPlugStatus(Boolean plugStatus) {
         this.plugStatus = plugStatus;
     }
 }

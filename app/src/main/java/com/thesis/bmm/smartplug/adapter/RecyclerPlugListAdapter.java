@@ -45,10 +45,10 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                     public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                         DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Plugs").child(plugsList.get(position).getPlugID());
                         if (isChecked) {
-                            Plugs plugs = new Plugs(plugsList.get(position).getPlugID(), plugsList.get(position).getPlugName(), plugsList.get(position).getPlugRoom(), plugsList.get(position).getPlugCurrent(), "true");
+                            Plugs plugs = new Plugs(plugsList.get(position).getPlugID(), plugsList.get(position).getPlugName(), plugsList.get(position).getPlugRoom(), plugsList.get(position).getPlugCurrent(), true);
                             dr.setValue(plugs);
                         } else {
-                            Plugs plugs = new Plugs(plugsList.get(position).getPlugID(), plugsList.get(position).getPlugName(), plugsList.get(position).getPlugRoom(), plugsList.get(position).getPlugCurrent(), "false");
+                            Plugs plugs = new Plugs(plugsList.get(position).getPlugID(), plugsList.get(position).getPlugName(), plugsList.get(position).getPlugRoom(), plugsList.get(position).getPlugCurrent(), false);
                             dr.setValue(plugs);
                         }
                     }

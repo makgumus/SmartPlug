@@ -48,7 +48,7 @@ public class NewPlugActivity extends AppCompatActivity implements View.OnClickLi
     {
         DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Plugs");
         String id = databaseReferencePlug.push().getKey();
-        Plugs plug = new Plugs(id, plugName.getText().toString(), roomSpinner.getSelectedItem().toString(), "0", "false");
+        Plugs plug = new Plugs(id, plugName.getText().toString(), roomSpinner.getSelectedItem().toString(), "0", false);
         databaseReferencePlug.child(id).setValue(plug);
     }
 
