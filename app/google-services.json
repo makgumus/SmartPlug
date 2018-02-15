@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "586088218306",
+    "firebase_url": "https://arduinoled-9959b.firebaseio.com",
+    "project_id": "arduinoled-9959b",
+    "storage_bucket": "arduinoled-9959b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586088218306:android:c70e58974ee5aa9f",
+        "android_client_info": {
+          "package_name": "com.thesis.bmm.smartplug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586088218306-j1f4jmegj9cd0u3h4pjjcd0gp6a36gnr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thesis.bmm.smartplug",
+            "certificate_hash": "9bc2c66b930b63ed6584048eb8a644f6814064fb"
+          }
+        },
+        {
+          "client_id": "586088218306-mi1gk4lta7m08bmlasqpbhsj2rg8kdc2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQhky1BF84KTmzeE4VwtU-rx8DLynSy1w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586088218306-mi1gk4lta7m08bmlasqpbhsj2rg8kdc2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
