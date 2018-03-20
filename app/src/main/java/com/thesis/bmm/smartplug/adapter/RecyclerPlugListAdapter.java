@@ -1,6 +1,7 @@
 package com.thesis.bmm.smartplug.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.CompoundButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.thesis.bmm.smartplug.R;
+import com.thesis.bmm.smartplug.activities.GraphicActivity;
 import com.thesis.bmm.smartplug.model.Plugs;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
 
     @Override
     public RecyclerPlugListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.pluglist_item, parent, false);
         return new RecyclerPlugListViewHolder(itemView);
     }
 
@@ -53,7 +55,15 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                         }
                     }
                 });
+        holder.currentGraphicInfo.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, GraphicActivity.class);
+                intent.putExtra("plugID", plugsList.get(position).getPlugID());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

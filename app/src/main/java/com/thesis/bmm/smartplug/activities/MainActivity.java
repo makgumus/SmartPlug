@@ -12,13 +12,15 @@ import android.view.View;
 
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.adapter.ViewPagerAdapter;
+import com.thesis.bmm.smartplug.fragments.NotificationFragment;
 import com.thesis.bmm.smartplug.fragments.PlugsFragment;
-import com.thesis.bmm.smartplug.fragments.SupportFragment;
+import com.thesis.bmm.smartplug.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
     private TabLayout tabLayout = null;
     private ViewPager vpFragments = null;
     private FloatingActionButton addNewPlugButton;
+    private String province = null, district = null, region = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +41,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         addNewPlugButton.setOnClickListener(this);
         ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         PlugsFragment plugsFragment = new PlugsFragment();
-        SupportFragment supportFragment = new SupportFragment();
+        NotificationFragment notificationFragment = new NotificationFragment();
+        SettingsFragment settingsFragment = new SettingsFragment();
         viewpagerAdapter.addFragment(plugsFragment, "Prizler");
-        viewpagerAdapter.addFragment(supportFragment, "Destek");
+        viewpagerAdapter.addFragment(notificationFragment, "Bildirim");
+        viewpagerAdapter.addFragment(settingsFragment, "Ayarlar");
         vpFragments.setAdapter(viewpagerAdapter);
         vpFragments.addOnPageChangeListener(this);
         vpFragments.setCurrentItem(0);

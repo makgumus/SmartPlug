@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5sp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/sehirler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/adress_content"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:textSize="18sp" />
+
+        <Switch
+            android:id="@+id/notification_switch"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:checked="false"
+            android:textOff="KAPALI"
+            android:textOn="AÇIK" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/button_citydelete"
+            android:layout_width="35dp"
+            android:layout_height="33dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="5dp"
+            android:layout_marginTop="20dp"
+            app:srcCompat="@drawable/ic_delete_black_24dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/button_cityupdate"
+            android:layout_width="35dp"
+            android:layout_height="33dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="5dp"
+            android:layout_marginTop="20dp"
+            app:srcCompat="@drawable/ic_settings_backup_restore_black_24dp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
