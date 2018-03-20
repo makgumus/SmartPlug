@@ -63,7 +63,7 @@ public class InterruptRequest {
                             String date = header.split(" ")[0] + "/" + convertMonth(header.split(" ")[1]) + "/" + header.split(" ")[2];
                             String district = header.split(" ")[3];
                             String region = row.select("p").text().toString();
-                            if (dateTimeNowToString() == date && district.toLowerCase() == county.toLowerCase() && region.toLowerCase().contains(neighborhood.toLowerCase().split(" ")[0])) {
+                            if (dateTimeNowToString() == date && district.toLowerCase() == county.toLowerCase() && region.toLowerCase().contains(neighborhood.toLowerCase().split(" ")[0])) {// neighborhood.substring(0,(neighborhood.length())-4) Mah. kısmını çıkartıyor
                                 electricityInterrupt.setDate(convertToDate(date));
                                 electricityInterrupt.setProvince(province);
                                 electricityInterrupt.setDistrict(district);

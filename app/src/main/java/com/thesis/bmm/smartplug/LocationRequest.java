@@ -106,7 +106,7 @@ public class LocationRequest {
         spn[0].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                city = spn[0].getSelectedItem().toString().toLowerCase();
+                city = spn[0].getSelectedItem().toString();
                 city = convertToCharacter(city);
                 firstRequestURL = "http://www.nufusune.com/" + city + "-ilceleri";
                 StringDistrictRequest(firstRequestURL, spn[1]);
@@ -121,7 +121,7 @@ public class LocationRequest {
         spn[1].setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                county = spn[1].getSelectedItem().toString().toLowerCase();
+                county = spn[1].getSelectedItem().toString();
                 county = convertToCharacter(county);
                 secondRequestURL = "http://www.nufusune.com/" + county + "-mahalleleri-koyleri-" + city;
                 StringRegionRequest(secondRequestURL, spn[2]);
@@ -153,13 +153,13 @@ public class LocationRequest {
     private void addNewLocationatFirebase() {
         DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Locations");
         String id = databaseReferencePlug.push().getKey();
-        Locations location = new Locations(id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString(), false);
+        Locations location = new Locations(id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString().substring(0,(spn[2].getSelectedItem().toString().length())-9), false);
         databaseReferencePlug.child(id).setValue(location);
     }
 
     private void updateLocationatFirebase(String id) {
         DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Locations").child(id);
-        Locations location = new Locations(id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString(), false);
+        Locations location = new Locations(id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(),spn[2].getSelectedItem().toString().substring(0,(spn[2].getSelectedItem().toString().length())-9), false);
         dr.setValue(location);
     }
 
@@ -179,9 +179,8 @@ public class LocationRequest {
                 districtList.clear();
                 for (int i = 0; i < rows.size(); i++) {
                     districtList.add(rows.get(i).text());
-
+                    districtSpinnerAdapter.notifyDataSetChanged();
                 }
-                districtSpinnerAdapter.notifyDataSetChanged();
                 spinner.setAdapter(districtSpinnerAdapter);
             }
         }, new Response.ErrorListener() {
@@ -204,49 +203,27 @@ public class LocationRequest {
                 regionList.clear();
                 for (int i = 0; i < rows.size(); i++) {
                     regionList.add(rows.get(i).text());
-
+                    regionSpinnerAdapter.notifyDataSetChanged();
                 }
-                regionSpinnerAdapter.notifyDataSetChanged();
+
                 spinner.setAdapter(regionSpinnerAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
         requestQueue.add(stringRequest);
     }
 
     private String convertToCharacter(String text) {
-        String convertedText = "";
-        for (int i = 0; i < text.length(); i++) {
-            switch (text.charAt(i)) {
-                //burada kelimeyi tek tek dolasıyoruz
-                //eğer ğ ı gibi kelime görürse bunu geçici kelimeye düzelterek ekliyor
-                case 'ğ':
-                    convertedText += 'g';
-                    break;
-                case 'ı':
-                    convertedText += 'i';
-                    break;
-                case 'ş':
-                    convertedText += 's';
-                    break;
-                case 'ü':
-                    convertedText += 'u';
-                    break;
-                case 'ö':
-                    convertedText += 'o';
-                    break;
-                case 'ç':
-                    convertedText += 'c';
-                    break;
-                default:
-                    convertedText += text.charAt(i);
-            }
+        text=text.toLowerCase();
+        String[] a={"ı","ü","ö","ç","ş","ğ"};
+        String[] b={"i","u","o","c","s","g"};
+        for(int i=0;i<a.length;i++) {
+            text = text.replaceAll(a[i]+"", b[i]+"");
         }
-        return convertedText;
+        return text;
     }
 
 }
