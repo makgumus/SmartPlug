@@ -1,6 +1,6 @@
 package com.thesis.bmm.smartplug.fragments;
 
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,25 +20,14 @@ import com.thesis.bmm.smartplug.model.Plugs;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PlugsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PlugsFragment#newInstance} factory method to
- * create an instance of this fragment.fg
- */
+
 public class PlugsFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private RecyclerView recyclerPlugsListView;
     private RecyclerView.LayoutManager recyclerLayoutManager;
     private DatabaseReference databaseReferencePlugs;
     private RecyclerPlugListAdapter plugListAdapter;
     private ArrayList<Plugs> plugsList;
     private View view;
-    private String mParam1;
-    private String mParam2;
 
     public PlugsFragment() {
         // Required empty public constructor
@@ -96,7 +85,6 @@ public class PlugsFragment extends Fragment {
     private void initView() {
         databaseReferencePlugs = FirebaseDatabase.getInstance().getReference("Plugs");
         recyclerPlugsListView = view.findViewById(R.id.recycler_plugsList);
-
         initEvent();
     }
 
@@ -105,8 +93,4 @@ public class PlugsFragment extends Fragment {
 
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

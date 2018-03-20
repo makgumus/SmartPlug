@@ -28,6 +28,11 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
 
+    public RecyclerLocationListAdapter(List<Locations> locationsList, Context context) {
+        this.locationsList = locationsList;
+        this.context = context;
+    }
+
     @Override
     public RecyclerLocationListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.locationslist_item, parent, false);
@@ -37,7 +42,7 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
     @Override
     public void onBindViewHolder(RecyclerLocationListViewHolder holder, final int position) {
         final Locations location = locationsList.get(position);
-        holder.adress.setText(location.getProvince() + " " + location.getDistrict() + " " + location.getRegion());
+        holder.adress.setText(location.getProvince() + "\n" + location.getDistrict() + "\n" + location.getRegion());
         holder.notification_status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/sehirler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="99dp"
         android:orientation="horizontal">
 
         <TextView
@@ -18,13 +18,14 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:layout_weight="1"
+            android:lines="3"
             android:textSize="18sp" />
 
         <Switch
             android:id="@+id/notification_switch"
             android:layout_width="0sp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:checked="false"
             android:textOff="KAPALI"
             android:textOn="AÇIK" />
