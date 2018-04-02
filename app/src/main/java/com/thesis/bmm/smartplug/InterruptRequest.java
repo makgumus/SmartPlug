@@ -1,8 +1,7 @@
 package com.thesis.bmm.smartplug;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,18 +9,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.thesis.bmm.smartplug.model.ElectricityInterrupt;
-import com.thesis.bmm.smartplug.services.GetInterruptContentAsyncTask;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -29,13 +29,13 @@ import java.util.Date;
  */
 
 public class InterruptRequest {
-    public ArrayList<ElectricityInterrupt> electricityInterruptList = new ArrayList<>();
     Context context;
-    private PendingIntent pendingIntent;
-    private AlarmManager alarmManager;
     private String province, county, neighborhood;
-    private String URL = "https://guncelkesintiler.com/" + province.toLowerCase() + "/elektrik-kesintisi/";
     private String homeURL = "https://guncelkesintiler.com";
+    public ArrayList<ElectricityInterrupt> electricityInterruptList = new ArrayList<>();
+
+    public InterruptRequest() {
+    }
 
     public InterruptRequest(Context context, String province, String district, String region) {
         this.context = context;
@@ -44,12 +44,15 @@ public class InterruptRequest {
         this.neighborhood = region;
     }
 
-    public void request() {
+    // status==0 >>NotificationFragment else >>NotificationReceiver
+    public void request(final String id) {
+        String URL = "https://guncelkesintiler.com/" + province.toLowerCase() + "/elektrik-kesintisi/";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
+                    LocationRequest forCharacterRevert = new LocationRequest();
                     Document document = Jsoup.parse(response);
                     if (document != null) {
                         Elements table = document.select("table");
@@ -63,7 +66,13 @@ public class InterruptRequest {
                             String date = header.split(" ")[0] + "/" + convertMonth(header.split(" ")[1]) + "/" + header.split(" ")[2];
                             String district = header.split(" ")[3];
                             String region = row.select("p").text().toString();
-                            if (dateTimeNowToString() == date && district.toLowerCase() == county.toLowerCase() && region.toLowerCase().contains(neighborhood.toLowerCase().split(" ")[0])) {// neighborhood.substring(0,(neighborhood.length())-4) Mah. kısmını çıkartıyor
+                            Log.i("dateTimeNowToString()", dateTimeNowToString());
+                            Log.i("district.tolowercase", district.toLowerCase());
+                            Log.i("county.tolowercase", county.toLowerCase());
+                            Log.i("region.tolowercase", region.toLowerCase());
+                            Log.i("date", date);
+                            Log.i("neighborhod.tolowercase", neighborhood.toLowerCase());
+                            if (date.equals(dateTimeNowToString()) && district.toLowerCase().equals(county.toLowerCase()) && forCharacterRevert.convertToCharacter(region).contains(forCharacterRevert.convertToCharacter(neighborhood))) {
                                 electricityInterrupt.setDate(convertToDate(date));
                                 electricityInterrupt.setProvince(province);
                                 electricityInterrupt.setDistrict(district);
@@ -71,11 +80,12 @@ public class InterruptRequest {
                                 electricityInterrupt.setContentLink(homeURL + contentLink);
                                 electricityInterruptList.add(electricityInterrupt);
                             }
+
                         }
                         for (int i = 0; i < electricityInterruptList.size(); i++) {
-                            new GetInterruptContentAsyncTask(electricityInterruptList.get(i)).execute(electricityInterruptList.get(i).getContentLink());
+                            //   new GetInterruptContentAsyncTask(electricityInterruptList.get(i)).execute(electricityInterruptList.get(i).getContentLink());
+                            interruptExplainRequest(electricityInterruptList.get(i).getContentLink().toString(), electricityInterruptList.get(i), id);
                         }
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -90,11 +100,42 @@ public class InterruptRequest {
         requestQueue.add(stringRequest);
     }
 
+    private void interruptExplainRequest(String url, final ElectricityInterrupt electricityInterrupt, final String id) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    Document document = Jsoup.parse(response);
+                    if (document != null) {
+                        Elements p = document.select("p");
+                        String content = p.first().text().toString();
+                        electricityInterrupt.setExplain(content);
+                        addNewInterruptatFirebase(electricityInterrupt.getExplain().toString(), id);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-    public int getInterruptSize() {
-        return electricityInterruptList.size();
+            }
+        });
+        requestQueue.add(stringRequest);
+
     }
 
+    private void addNewInterruptatFirebase(String explain, String id) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Interrupts");
+        databaseReference.child(id).setValue(explain);
+    }
+
+    public void deleteInterruptatFirebase(String id) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Interrupts");
+        databaseReference.child(id).removeValue();
+    }
     private String convertMonth(String month) {
         String convertedtoMonth = null;
         switch (month) {
@@ -153,9 +194,9 @@ public class InterruptRequest {
     }
 
     public String dateTimeNowToString() {
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        Date now = new Date();
-        final String dateTimeNow = df.format(now);
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar now = Calendar.getInstance();
+        String dateTimeNow = df.format(now.getTime());
         return dateTimeNow;
     }
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
+import com.thesis.bmm.smartplug.InterruptRequest;
 import com.thesis.bmm.smartplug.LocationRequest;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.model.Locations;
@@ -42,13 +43,19 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
     @Override
     public void onBindViewHolder(RecyclerLocationListViewHolder holder, final int position) {
         final Locations location = locationsList.get(position);
+        final LocationRequest locationRequest = new LocationRequest(context);
+        final InterruptRequest interruptRequest = new InterruptRequest(context, location.getProvince().toString(), location.getDistrict().toString(), location.getRegion().toString());
         holder.adress.setText(location.getProvince() + "\n" + location.getDistrict() + "\n" + location.getRegion());
         holder.notification_status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    setDailyInterruptRequest(location.getProvince().toString(), location.getDistrict().toString(), location.getRegion().toString().substring(0, location.getRegion().toString().length() - 9));
+                    locationRequest.updateLocationatFirebase(location.getLocationID().toString(), location.getProvince().toString(), location.getDistrict().toString(), location.getRegion().toString(), true);
+                    interruptRequest.request(location.getLocationID().toString());
+                    setDailyInterruptRequest(location.getProvince().toString(), location.getDistrict().toString(), location.getRegion().toString(), location.getLocationID().toString());
                 } else {
+                    locationRequest.updateLocationatFirebase(location.getLocationID(), location.getProvince(), location.getDistrict(), location.getRegion(), false);
+                    interruptRequest.deleteInterruptatFirebase(location.getLocationID().toString());
                     cancelDailyInterruptRequest();
                 }
             }
@@ -57,7 +64,8 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
             @Override
             public void onClick(View v) {
                 LocationRequest locationRequest = new LocationRequest(context);
-                locationRequest.selectAdressDialog(0, locationsList.get(position).getLocationID());
+                locationRequest.selectAdressDialog(0, location.getLocationID(), location.getNotificationStatus());
+                interruptRequest.deleteInterruptatFirebase(location.getLocationID());
 
             }
         });
@@ -65,20 +73,22 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
             @Override
             public void onClick(View v) {
                 LocationRequest locationRequest = new LocationRequest(context);
-                locationRequest.deleteLocation(locationsList.get(position).getLocationID());
+                locationRequest.deleteLocation(location.getLocationID());
+                interruptRequest.deleteInterruptatFirebase(location.getLocationID());
             }
         });
     }
 
-    private void setDailyInterruptRequest(String province, String district, String region) {
+    private void setDailyInterruptRequest(String province, String district, String region, String locationId) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         Intent intent = new Intent(context, NotificationReceiver.class);
+        intent.putExtra("LocationID", locationId);
         intent.putExtra("Province", province);
         intent.putExtra("District", district);
         intent.putExtra("Region", region);
-        pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }

@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.thesis.bmm.smartplug.R;
-import com.thesis.bmm.smartplug.model.ElectricityInterrupt;
 
 import java.util.ArrayList;
 
@@ -17,12 +16,12 @@ import java.util.ArrayList;
  */
 
 public class InterruptListAdapter extends BaseAdapter {
-    ArrayList<ElectricityInterrupt> interruptList;
+    ArrayList<String> interruptList;
     private LayoutInflater layoutInflater;
     private Context context;
     private TextView content;
 
-    public InterruptListAdapter(ArrayList<ElectricityInterrupt> interruptList, Context context) {
+    public InterruptListAdapter(ArrayList<String> interruptList, Context context) {
         this.interruptList = interruptList;
         this.context = context;
     }
@@ -47,7 +46,7 @@ public class InterruptListAdapter extends BaseAdapter {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = layoutInflater.inflate(R.layout.interrupt_item, null);
         content = convertView.findViewById(R.id.contentInterrupt);
-        content.setText(interruptList.get(position).getExplain());
+        content.setText(interruptList.get(position).toString());
         return convertView;
     }
 

@@ -33,7 +33,6 @@ import java.util.ArrayList;
 
 public class LocationRequest {
     Context context;
-    Spinner[] spn;
     private ArrayList districtList;
     private ArrayList regionList;
     private ArrayAdapter<String> provinceSpinnerAdapter, districtSpinnerAdapter, regionSpinnerAdapter;
@@ -53,9 +52,12 @@ public class LocationRequest {
         this.context = context;
     }
 
+    public LocationRequest() {
+    }
+
     //int status=1  >> AddLocation
     //int status=0  >> UpdateLocation
-    public void selectAdressDialog(final int status, final String location_id) {
+    public void selectAdressDialog(final int status, final String location_id, final Boolean notification) {
         regionList = new ArrayList();
         districtList = new ArrayList();
         provinceSpinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, cities);
@@ -100,9 +102,9 @@ public class LocationRequest {
         builder.setPositiveButton("Tamam", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (status == 1) {
-                    addNewLocationatFirebase(spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString().substring(0, (spn[2].getSelectedItem().toString().length()) - 9));
+                    addNewLocationatFirebase(spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString());
                 } else {
-                    updateLocationatFirebase(location_id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString().substring(0, (spn[2].getSelectedItem().toString().length()) - 9));
+                    updateLocationatFirebase(location_id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString(), notification);
                 }
             }
         });
@@ -157,9 +159,9 @@ public class LocationRequest {
         databaseReferencePlug.child(id).setValue(location);
     }
 
-    private void updateLocationatFirebase(String id, String city, String district, String region) {
+    public void updateLocationatFirebase(String id, String city, String district, String region, Boolean status) {
         DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Locations").child(id);
-        Locations location = new Locations(id, city, district, region, false);
+        Locations location = new Locations(id, city, district, region, status);
         dr.setValue(location);
     }
 
@@ -202,7 +204,7 @@ public class LocationRequest {
                 Elements rows = classes.first().select("a");
                 regionList.clear();
                 for (int i = 0; i < rows.size(); i++) {
-                    regionList.add(rows.get(i).text());
+                    regionList.add(rows.get(i).text().substring(0, rows.get(i).text().length() - 10));
                     regionSpinnerAdapter.notifyDataSetChanged();
                 }
 
@@ -216,7 +218,7 @@ public class LocationRequest {
         requestQueue.add(stringRequest);
     }
 
-    private String convertToCharacter(String text) {
+    public String convertToCharacter(String text) {
         text = text.toLowerCase();
         String[] a = {"ı", "ü", "ö", "ç", "ş", "ğ"};
         String[] b = {"i", "u", "o", "c", "s", "g"};

@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,17 +15,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.thesis.bmm.smartplug.InterruptRequest;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.adapter.InterruptListAdapter;
+import com.thesis.bmm.smartplug.model.ElectricityInterrupt;
 import com.thesis.bmm.smartplug.model.Locations;
 
 import java.util.ArrayList;
 
 
 public class NotificationFragment extends Fragment {
-    private ListView interruptsList;
-    private Button btn;
+    private ListView interruptsListView;
     private View view;
-    private String province, district, region;
     private ArrayList<Locations> locationsList;
+    private ArrayList<String> interruptList;
+    private InterruptRequest interruptRequest;
+    private ArrayList<ElectricityInterrupt> list;
 
     public NotificationFragment() {
 
@@ -35,7 +36,6 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        getDatafromFirebase();
     }
 
     @Override
@@ -54,30 +54,24 @@ public class NotificationFragment extends Fragment {
     }
 
     private void initView() {
-        interruptsList = view.findViewById(R.id.list);
+        interruptsListView = view.findViewById(R.id.list);
         locationsList = new ArrayList<>();
-        if (locationsList != null) {
-            for (int i = 0; i < locationsList.size(); i++) {
-                Locations location = locationsList.get(i);
-                InterruptRequest interruptRequest = new InterruptRequest(this.getContext(), location.getProvince().toString(), location.getDistrict().toString(), location.getRegion().toString());
-                interruptRequest.request();
-                InterruptListAdapter adapter = new InterruptListAdapter(interruptRequest.electricityInterruptList, getContext());
-                interruptsList.setAdapter(adapter);
-            }
-
-        }
+        interruptList = new ArrayList<String>();
+        getInterruptDatafromFirebase();
     }
 
-    private void getDatafromFirebase() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Locations");
+    private void getInterruptDatafromFirebase() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Interrupts");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                locationsList.clear();
+                interruptList.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Locations location = postSnapshot.getValue(Locations.class);
-                    locationsList.add(location);
+                    String interruptExplain = postSnapshot.getValue().toString();
+                    interruptList.add(interruptExplain);
                 }
+                InterruptListAdapter adapter = new InterruptListAdapter(interruptList, getContext());
+                interruptsListView.setAdapter(adapter);
             }
 
             @Override

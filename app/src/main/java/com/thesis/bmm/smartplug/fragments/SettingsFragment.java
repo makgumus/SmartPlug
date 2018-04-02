@@ -88,7 +88,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 locationRequest = new LocationRequest(getContext());
-                locationRequest.selectAdressDialog(1, "null");
+                locationRequest.selectAdressDialog(1, "null", false);
             }
         });
     }

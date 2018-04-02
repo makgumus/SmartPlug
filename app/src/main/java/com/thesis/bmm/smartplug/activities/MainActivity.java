@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         NotificationFragment notificationFragment = new NotificationFragment();
         SettingsFragment settingsFragment = new SettingsFragment();
         viewpagerAdapter.addFragment(plugsFragment, "Prizler");
-        viewpagerAdapter.addFragment(notificationFragment, "Bildirim");
+        viewpagerAdapter.addFragment(notificationFragment, "Bildirimler");
         viewpagerAdapter.addFragment(settingsFragment, "Ayarlar");
         vpFragments.setAdapter(viewpagerAdapter);
         vpFragments.addOnPageChangeListener(this);
