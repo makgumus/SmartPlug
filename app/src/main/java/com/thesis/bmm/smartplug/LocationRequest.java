@@ -181,7 +181,7 @@ public class LocationRequest {
                 Elements rows = tables.get(1).select("a");
                 districtList.clear();
                 for (int i = 0; i < rows.size(); i++) {
-                    districtList.add(rows.get(i).text());
+                    regionList.add(rows.get(i).text().substring(0, rows.get(i).text().length() - 10));
                     districtSpinnerAdapter.notifyDataSetChanged();
                 }
                 spinner.setAdapter(districtSpinnerAdapter);
