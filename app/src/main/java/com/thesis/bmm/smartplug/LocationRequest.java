@@ -76,9 +76,10 @@ public class LocationRequest {
             spn[i] = new Spinner(context);
         }
 
-        tvMessage[0].setText("Şehir Şeçiniz");
-        tvMessage[1].setText("İlçe Şeçiniz");
-        tvMessage[2].setText("Mahalle Şeçiniz");
+        tvMessage[0].setText(""+context.getResources().getString(R.string.chooseyourcity));
+        tvMessage[1].setText(""+context.getResources().getString(R.string.chooseyourdistrict));
+        tvMessage[2].setText(""+context.getResources().getString(R.string.chooseyourneighborhood));
+
 
         for (int i = 0; i < 3; i++) {
             tvMessage[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
@@ -94,12 +95,12 @@ public class LocationRequest {
         builder.setView(layout);
 
 
-        builder.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(""+context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-        builder.setPositiveButton("Tamam", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(""+context.getResources().getString(R.string.okey), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (status == 1) {
                     addNewLocationatFirebase(spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString());
@@ -204,7 +205,7 @@ public class LocationRequest {
                 Elements rows = classes.first().select("a");
                 regionList.clear();
                 for (int i = 0; i < rows.size(); i++) {
-                    regionList.add(rows.get(i).text().substring(0, rows.get(i).text().length() - 10));
+                    regionList.add(rows.get(i).text());
                     regionSpinnerAdapter.notifyDataSetChanged();
                 }
 

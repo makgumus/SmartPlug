@@ -1,54 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5sp"
     android:orientation="vertical">
-
     <LinearLayout
         android:id="@+id/sehirler"
         android:layout_width="match_parent"
-        android:layout_height="99dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/address"
+            android:textSize="12sp" />
         <TextView
             android:id="@+id/adress_content"
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:lines="3"
-            android:textSize="18sp" />
-
-        <Switch
-            android:id="@+id/notification_switch"
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:checked="false"
-            android:textOff="KAPALI"
-            android:textOn="AÇIK" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/button_citydelete"
-            android:layout_width="35dp"
-            android:layout_height="33dp"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="5dp"
-            android:layout_marginTop="20dp"
-            app:srcCompat="@drawable/ic_delete_black_24dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/button_cityupdate"
-            android:layout_width="35dp"
-            android:layout_height="33dp"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="5dp"
-            android:layout_marginTop="20dp"
-            app:srcCompat="@drawable/ic_settings_backup_restore_black_24dp" />
-
+            android:textSize="13sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/downtimenotice"
+                android:textSize="12sp" />
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:checked="true" />
+        </LinearLayout>
     </LinearLayout>
-
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/button_citydelete"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/addressdelete"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp" />
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/button_cityupdate"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/addressupdate"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp" />
+    </LinearLayout>
 </LinearLayout>

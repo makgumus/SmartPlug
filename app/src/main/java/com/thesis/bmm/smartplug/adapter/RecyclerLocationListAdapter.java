@@ -1,8 +1,10 @@
 package com.thesis.bmm.smartplug.adapter;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -63,18 +65,49 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
         holder.update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationRequest locationRequest = new LocationRequest(context);
-                locationRequest.selectAdressDialog(0, location.getLocationID(), location.getNotificationStatus());
-                interruptRequest.deleteInterruptatFirebase(location.getLocationID());
-
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                alertDialog.setTitle(""+context.getResources().getString(R.string.addressupdate));
+                alertDialog.setMessage(""+context.getResources().getString(R.string.addressupdateexample));
+                alertDialog.setIcon(R.drawable.smartplug);
+                alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                LocationRequest locationRequest = new LocationRequest(context);
+                                locationRequest.selectAdressDialog(0, location.getLocationID(), location.getNotificationStatus());
+                                interruptRequest.deleteInterruptatFirebase(location.getLocationID());
+                            }
+                        });
+                alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationRequest locationRequest = new LocationRequest(context);
-                locationRequest.deleteLocation(location.getLocationID());
-                interruptRequest.deleteInterruptatFirebase(location.getLocationID());
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                alertDialog.setTitle(""+context.getResources().getString(R.string.addressdelete));
+                alertDialog.setMessage(""+context.getResources().getString(R.string.addressdeleteexample));
+                alertDialog.setIcon(R.drawable.smartplug);
+                alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                LocationRequest locationRequest = new LocationRequest(context);
+                                locationRequest.deleteLocation(location.getLocationID());
+                                interruptRequest.deleteInterruptatFirebase(location.getLocationID());
+                            }
+                        });
+                alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
             }
         });
     }

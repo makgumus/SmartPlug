@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
+    tools:context="com.thesis.bmm.smartplug.activities.LoginActivity">
+    <ImageView
+        android:padding="20dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/email"
+        android:hint="@string/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/password"
+        android:hint="@string/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword" />
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/passwordrepeature"
+        android:hint="@string/passwordrepeature"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword" />
+    <Spinner
+        android:visibility="gone"
+        android:id="@+id/electricityuse"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:entries="@array/array_electricitytime">
+    </Spinner>
+    <Button
+        android:id="@+id/login"
+        android:layout_margin="5dp"
+        android:text="@string/login"
+        android:background="@drawable/roundbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/register"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:text="@string/register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

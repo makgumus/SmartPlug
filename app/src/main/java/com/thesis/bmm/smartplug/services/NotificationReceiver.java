@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thesis.bmm.smartplug.InterruptRequest;
+import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.activities.MainActivity;
 
 
@@ -51,7 +52,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                                 .setContentIntent(pendingIntent)
                                 .setSmallIcon(android.support.v4.R.drawable.notification_bg_low_normal)
-                                .setContentTitle(interrupt.dateTimeNowToString() + " Tarihinde elektrik kesintisi var")
+                                .setContentTitle(interrupt.dateTimeNowToString() + ""+cntxt.getResources().getString(R.string.interruption))
                                 .setContentText(interruptExplain)
                                 .setAutoCancel(true);
                         notificationManager.notify(1, notification.build());
