@@ -1,6 +1,8 @@
 package com.thesis.bmm.smartplug.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -62,6 +64,50 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                 Intent intent = new Intent(context, GraphicActivity.class);
                 intent.putExtra("plugID", plugsList.get(position).getPlugID());
                 context.startActivity(intent);
+            }
+        });
+        holder.update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                alertDialog.setTitle(""+context.getResources().getString(R.string.plugupdate));
+                alertDialog.setMessage(""+context.getResources().getString(R.string.plugupdateexample));
+                alertDialog.setIcon(R.drawable.smartplug);
+                alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Priz güncelleme kodu
+                            }
+                        });
+                alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                alertDialog.setTitle(""+context.getResources().getString(R.string.plugdelete));
+                alertDialog.setMessage(""+context.getResources().getString(R.string.plugdeleteexample));
+                alertDialog.setIcon(R.drawable.smartplug);
+                alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Priz silme kodu
+                            }
+                        });
+                alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
             }
         });
     }

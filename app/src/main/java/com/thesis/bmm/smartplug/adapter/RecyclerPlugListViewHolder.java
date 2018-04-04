@@ -1,5 +1,6 @@
 package com.thesis.bmm.smartplug.adapter;
 
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -16,6 +17,7 @@ public class RecyclerPlugListViewHolder extends RecyclerView.ViewHolder {
     public TextView txtRoomName = null, txtPlugName = null;
     public SwitchCompat plugStatus;
     public ImageView currentGraphicInfo;
+    public AppCompatImageView update, delete;
 
     public RecyclerPlugListViewHolder(View itemView) {
         super(itemView);
@@ -23,7 +25,10 @@ public class RecyclerPlugListViewHolder extends RecyclerView.ViewHolder {
         txtPlugName = this.itemView.findViewById(R.id.plugName);
         plugStatus = this.itemView.findViewById(R.id.switch_plugStatus);
         currentGraphicInfo = this.itemView.findViewById(R.id.currentGraphInfo);
-
+        update = itemView.findViewById(R.id.button_plugupdate);
+        delete = itemView.findViewById(R.id.button_plugdelete);
+        delete.setImageResource(R.drawable.ic_delete_black_24dp);
+        update.setImageResource(R.drawable.ic_settings_backup_restore_black_24dp);
     }
 
 }

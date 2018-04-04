@@ -6,10 +6,11 @@
     <color name="beyaz">#ffffff</color>
     <color name="mycolor">#86827e</color>
     <color name="mycolor2">#ce13bb</color>
+    <color name="mycolor3">#ce13bb</color>
     <color name="colorSec">#BDBDBD</color>
     <color name="colorImportant">#FBC02D</color>
     <color name="transDarkBg">#6437474f</color>
     <color name="lightbg">#ffeff3fe</color>
     <color name="colorYellow">#ECD078</color>
-    <color name="colorBlue">#53777A</color>
+    <color name="colorBlue">#19c6d4</color>
 </resources>

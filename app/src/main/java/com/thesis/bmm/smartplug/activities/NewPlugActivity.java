@@ -28,8 +28,8 @@ public class NewPlugActivity extends AppCompatActivity implements View.OnClickLi
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_plug);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.smartplug);
         initView();
     }
 
@@ -57,7 +57,7 @@ public class NewPlugActivity extends AppCompatActivity implements View.OnClickLi
 
         if (plugName.getText().length() > 0) {
             addNewPlugatFirebase();
-            Toast.makeText(getApplicationContext(), "Yeni Priz Eklendi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.newplufadded), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         } else {
@@ -67,9 +67,9 @@ public class NewPlugActivity extends AppCompatActivity implements View.OnClickLi
 
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(NewPlugActivity.this);
-        builder.setTitle("Hata");
-        builder.setMessage("Lütfen Prizin Adını Giriniz!");
-        String positiveText = "TAMAM";
+        builder.setTitle(""+getResources().getString(R.string.error));
+        builder.setMessage(""+getResources().getString(R.string.pleaseenterthenameoftheplug));
+        String positiveText = ""+getResources().getString(R.string.okey);
         builder.setPositiveButton(positiveText,
                 new DialogInterface.OnClickListener() {
                     @Override

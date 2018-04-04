@@ -1,83 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
+    android:orientation="vertical">
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/roomName"
+        android:id="@+id/sehirler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:text="@string/text"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="36dp"
-            tools:layout_editor_absoluteY="7dp" />
-
-        <TextView
-
-            android:id="@+id/plugName"
+            android:layout_height="60dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/roomName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/text"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="36dp"
+                tools:layout_editor_absoluteY="7dp" />
+            <TextView
+                android:id="@+id/plugName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/text"
+                android:textColor="@color/mycolor2"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="36dp"
+                tools:layout_editor_absoluteY="41dp" />
+        </LinearLayout>
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:text="@string/text"
-            android:textColor="@color/mycolor2"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="36dp"
-            tools:layout_editor_absoluteY="41dp" />
-
+            android:layout_height="60dp"
+            android:gravity="center_vertical|center|end">
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_toLeftOf="@+id/switch_plugStatus"
+                android:gravity="center"
+                android:text="@string/currentchart" />
+            <ImageView
+                android:id="@+id/currentGraphInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/textView2"
+                android:layout_toLeftOf="@+id/textView2"
+                android:layout_toStartOf="@+id/textView2"
+                app:srcCompat="@android:drawable/ic_menu_info_details"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="241dp"
+                tools:layout_editor_absoluteY="7dp" />
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_plugStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentRight="true"
+                android:theme="@style/Theme.MyTheme"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="310dp"
+                tools:layout_editor_absoluteY="7dp"
+                android:checked="true"/>
+        </RelativeLayout>
     </LinearLayout>
-
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:gravity="center_vertical|center|end">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/button_plugdelete"
+            android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_toLeftOf="@+id/switch_plugStatus"
-            android:gravity="center"
-            android:text="Akım Grafiği" />
-
-        <ImageView
-            android:id="@+id/currentGraphInfo"
+            />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/textView2"
-            android:layout_toLeftOf="@+id/textView2"
-            android:layout_toStartOf="@+id/textView2"
-            app:srcCompat="@android:drawable/ic_menu_info_details"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="241dp"
-            tools:layout_editor_absoluteY="7dp" />
-
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/switch_plugStatus"
+            android:layout_marginTop="2dp"
+            android:text="@string/plugdelete"
+            android:textSize="12sp"
+            />
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/button_plugupdate"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentRight="true"
-            android:theme="@style/Theme.MyTheme"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="310dp"
-            tools:layout_editor_absoluteY="7dp" />
-
-
-    </RelativeLayout>
-
+            android:text="@string/plugupdate"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp" />
+    </LinearLayout>
 
 </LinearLayout>
