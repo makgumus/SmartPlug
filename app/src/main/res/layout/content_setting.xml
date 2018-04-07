@@ -29,13 +29,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Spinner
             android:id="@+id/spnlanguage"
-            android:entries="@array/array_language"
             android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:entries="@array/array_language" />
         <Button
             android:id="@+id/btnlanguagechange"
             android:text="@string/change"

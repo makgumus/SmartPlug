@@ -86,10 +86,10 @@ public class SettingsFragment extends Fragment {
 
     private void initView(View views) {
         locationAdd = views.findViewById(R.id.button_adress_add);
-        spnlanguage=views.findViewById(R.id.spnlanguage);
-        btnlanguagechange=views.findViewById(R.id.btnlanguagechange);
-        AppCompatImageView image =views.findViewById(R.id.iv_about);
-        AppCompatImageView image2 =views.findViewById(R.id.iv_about2);
+        spnlanguage = views.findViewById(R.id.spnlanguage);
+        btnlanguagechange = views.findViewById(R.id.btnlanguagechange);
+        AppCompatImageView image = views.findViewById(R.id.iv_about);
+        AppCompatImageView image2 = views.findViewById(R.id.iv_about2);
         image.setImageResource(R.drawable.ic_language_black_24dp);
         image2.setImageResource(R.drawable.ic_notifications_active_black_24dp);
         recyclerLocationsListView = views.findViewById(R.id.recycler_locationsList);
@@ -103,18 +103,15 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 locationRequest = new LocationRequest(getContext());
-                locationRequest.selectAdressDialog(1, "null", false);
+                locationRequest.selectAdressDialog(1, "null");
             }
         });
         btnlanguagechange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(spnlanguage.getSelectedItem().toString().equals("Türkçe") || spnlanguage.getSelectedItem().toString().equals("Turkish") )
-                {
+                if (spnlanguage.getSelectedItem().toString().equals("Türkçe") || spnlanguage.getSelectedItem().toString().equals("Turkish")) {
                     SavePreferencesString("dil", "Turkish");
-                }
-                else
-                {
+                } else {
                     SavePreferencesString("dil", "English");
                 }
                 Intent refresh = new Intent(getContext(), MainActivity.class);
@@ -123,7 +120,8 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-    private void SavePreferencesString(String key, String value){
+
+    private void SavePreferencesString(String key, String value) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);

@@ -39,7 +39,7 @@
     <string name="pleaseenterthenameoftheplug">Lütfen Prizin Adını Giriniz!</string>
     <string name="okey">Tamam</string>
     <string name="cancel">İptal</string>
-    <string name="interruption">Tarihinde elektrik kesintisi var</string>
+    <string name="interruption"> Tarihinde elektrik kesintisi var</string>
     <string name="login">Giriş</string>
     <string name="register"><u>Kayıt ol</u></string>
     <string-array name="array_name">

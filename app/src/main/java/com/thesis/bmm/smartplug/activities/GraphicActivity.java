@@ -30,7 +30,6 @@ public class GraphicActivity extends AppCompatActivity {
     DatabaseReference drPlugs = FirebaseDatabase.getInstance().getReference().child("Plugs");
     TextView plugCurrentText;
     ArrayList<Entry> entries;
-    int x = 0;
     private LineChart realTimeCurrentGraph;
     private String plugId, plugLiveCurrent;
 
@@ -53,6 +52,7 @@ public class GraphicActivity extends AppCompatActivity {
         drawCurrentGraph();
         currentDataUpdate();
     }
+
 
     private void drawCurrentGraph() {
         entries = new ArrayList<>();

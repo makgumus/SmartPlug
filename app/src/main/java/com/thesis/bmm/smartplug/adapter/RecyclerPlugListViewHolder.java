@@ -14,10 +14,10 @@ import com.thesis.bmm.smartplug.R;
  */
 
 public class RecyclerPlugListViewHolder extends RecyclerView.ViewHolder {
-    public TextView txtRoomName = null, txtPlugName = null;
+    public TextView txtRoomName = null, txtPlugName = null, txtDelete = null, txtUpdate = null;
     public SwitchCompat plugStatus;
     public ImageView currentGraphicInfo;
-    public AppCompatImageView update, delete;
+    public AppCompatImageView updateButton, deleteButton;
 
     public RecyclerPlugListViewHolder(View itemView) {
         super(itemView);
@@ -25,10 +25,12 @@ public class RecyclerPlugListViewHolder extends RecyclerView.ViewHolder {
         txtPlugName = this.itemView.findViewById(R.id.plugName);
         plugStatus = this.itemView.findViewById(R.id.switch_plugStatus);
         currentGraphicInfo = this.itemView.findViewById(R.id.currentGraphInfo);
-        update = itemView.findViewById(R.id.button_plugupdate);
-        delete = itemView.findViewById(R.id.button_plugdelete);
-        delete.setImageResource(R.drawable.ic_delete_black_24dp);
-        update.setImageResource(R.drawable.ic_settings_backup_restore_black_24dp);
+        updateButton = itemView.findViewById(R.id.button_plugupdate);
+        deleteButton = itemView.findViewById(R.id.button_plugdelete);
+        txtDelete = itemView.findViewById(R.id.tvDelete);
+        txtUpdate = itemView.findViewById(R.id.tvUpdate);
+        deleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+        updateButton.setImageResource(R.drawable.ic_settings_backup_restore_black_24dp);
     }
 
 }

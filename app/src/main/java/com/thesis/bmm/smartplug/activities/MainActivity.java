@@ -1,17 +1,12 @@
 package com.thesis.bmm.smartplug.activities;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.adapter.ViewPagerAdapter;
@@ -20,10 +15,9 @@ import com.thesis.bmm.smartplug.fragments.NotificationFragment;
 import com.thesis.bmm.smartplug.fragments.PlugsFragment;
 import com.thesis.bmm.smartplug.fragments.SettingsFragment;
 
-public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
     private TabLayout tabLayout = null;
-    private ViewPager vpFragments = null;
-    private String province = null, district = null, region = null;
+    public ViewPager vpFragments = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +91,4 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
-    @Override
-    public void onClick(View view) {
-        Intent intent = new Intent(getApplicationContext(), NewPlugActivity.class);
-        startActivity(intent);
-    }
 }

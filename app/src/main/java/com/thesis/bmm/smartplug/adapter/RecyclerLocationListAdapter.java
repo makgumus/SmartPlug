@@ -43,7 +43,7 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerLocationListViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerLocationListViewHolder holder, final int position) {
         final Locations location = locationsList.get(position);
         final LocationRequest locationRequest = new LocationRequest(context);
         final InterruptRequest interruptRequest = new InterruptRequest(context, location.getProvince().toString(), location.getDistrict().toString(), location.getRegion().toString());
@@ -73,7 +73,7 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 LocationRequest locationRequest = new LocationRequest(context);
-                                locationRequest.selectAdressDialog(0, location.getLocationID(), location.getNotificationStatus());
+                                locationRequest.selectAdressDialog(0, location.getLocationID());
                                 interruptRequest.deleteInterruptatFirebase(location.getLocationID());
                             }
                         });
@@ -110,6 +110,7 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
                 alertDialog.show();
             }
         });
+        holder.notification_status.setChecked(location.getNotificationStatus());
     }
 
     private void setDailyInterruptRequest(String province, String district, String region, String locationId) {

@@ -1,7 +1,6 @@
 package com.thesis.bmm.smartplug.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,8 +15,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.thesis.bmm.smartplug.EditPlugDialog;
 import com.thesis.bmm.smartplug.R;
-import com.thesis.bmm.smartplug.activities.NewPlugActivity;
 import com.thesis.bmm.smartplug.adapter.RecyclerPlugListAdapter;
 import com.thesis.bmm.smartplug.model.Plugs;
 
@@ -32,6 +31,7 @@ public class PlugsFragment extends Fragment {
     private ArrayList<Plugs> plugsList;
     private View view;
     private FloatingActionButton addNewPlugButton;
+
 
     public PlugsFragment() {
         // Required empty public constructor
@@ -97,8 +97,10 @@ public class PlugsFragment extends Fragment {
         plugsList = new ArrayList<>();
         addNewPlugButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NewPlugActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getActivity(), NewPlugActivity.class);
+                //startActivity(intent);
+                EditPlugDialog plugDialog = new EditPlugDialog(getActivity());
+                plugDialog.selectPlugDialog(1, null);
             }
         });
     }

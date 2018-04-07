@@ -3,6 +3,7 @@ package com.thesis.bmm.smartplug;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,20 +34,10 @@ import java.util.ArrayList;
 
 public class LocationRequest {
     Context context;
-    private ArrayList districtList;
-    private ArrayList regionList;
-    private ArrayAdapter<String> provinceSpinnerAdapter, districtSpinnerAdapter, regionSpinnerAdapter;
+    private ArrayList provinceList, districtList, regionList;
+    private ArrayAdapter<String> districtSpinnerAdapter, regionSpinnerAdapter, provinceSpinnerAdapter;
     private String city, county;
-    private String firstRequestURL;
-    private String secondRequestURL;
-    private String[] cities = {"İSTANBUL", "SAKARYA", "ADANA", "KONYA", "ADIYAMAN", "KÜTAHYA", "AFYONKARAHİSAR", "MALATYA", "AĞRI",
-            "MANİSA", "AMASYA", "KAHRAMANMARAŞ", "ANKARA", "MARDİN", "ANTALYA", "MUĞLA", "ARTVİN", "MUŞ", "AYDIN", "NEVŞEHİR",
-            "BALIKESİR", "NİĞDE", "BİLECİK", "ORDU", "BİNGÖL", "RİZE", "BİTLİS", "BOLU", "SAMSUN", "BURDUR", "SİİRT",
-            "BURSA", "SİNOP", "ÇANAKKALE", "SİVAS", "ÇANKIRI", "TEKİRDAĞ", "ÇORUM", "TOKAT", "DENİZLİ", "TRABZON", "DİYARBAKIR",
-            "TUNCELİ", "EDİRNE", "ŞANLIURFA", "ELAZIĞ", "UŞAK", "ERZİNCAN", "VAN", "ERZURUM", "YOZGAT", "ESKİŞEHİR", "ZONGULDAK",
-            "GAZİANTEP", "AKSARAY", "GİRESUN", "BAYBURT", "GÜMÜŞHANE", "KARAMAN", "HAKKARİ", "KIRIKKALE", "HATAY", "BATMAN",
-            "ISPARTA", "ŞIRNAK", "MERSİN", "BARTIN", "ARDAHAN", "İZMİR", "IĞDIR", "KARS", "YALOVA", "KASTAMONU",
-            "KARABÜK", "KAYSERİ", "KİLİS", "KIRKLARELİ", "OSMANİYE", "KIRŞEHİR", "DÜZCE", "KOCAELİ"};
+    private String firstRequestURL, secondRequestURL, provinceURL = "http://www.nufusune.com/ilceler";
 
     public LocationRequest(Context context) {
         this.context = context;
@@ -57,10 +48,11 @@ public class LocationRequest {
 
     //int status=1  >> AddLocation
     //int status=0  >> UpdateLocation
-    public void selectAdressDialog(final int status, final String location_id, final Boolean notification) {
+    public void selectAdressDialog(final int status, final String location_id) {
         regionList = new ArrayList();
         districtList = new ArrayList();
-        provinceSpinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, cities);
+        provinceList = new ArrayList();
+        provinceSpinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, provinceList);
         districtSpinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, districtList);
         regionSpinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, regionList);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -70,17 +62,14 @@ public class LocationRequest {
         for (int i = 0; i < textViewCount; i++) {
             tvMessage[i] = new TextView(context);
         }
-
         final Spinner[] spn = new Spinner[4];
         for (int i = 0; i < spn.length; i++) {
             spn[i] = new Spinner(context);
         }
-
-        tvMessage[0].setText(""+context.getResources().getString(R.string.chooseyourcity));
-        tvMessage[1].setText(""+context.getResources().getString(R.string.chooseyourdistrict));
-        tvMessage[2].setText(""+context.getResources().getString(R.string.chooseyourneighborhood));
-
-
+        StringProvinceRequest(provinceURL, spn[0]);
+        tvMessage[0].setText("" + context.getResources().getString(R.string.chooseyourcity));
+        tvMessage[1].setText("" + context.getResources().getString(R.string.chooseyourdistrict));
+        tvMessage[2].setText("" + context.getResources().getString(R.string.chooseyourneighborhood));
         for (int i = 0; i < 3; i++) {
             tvMessage[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
         }
@@ -95,17 +84,17 @@ public class LocationRequest {
         builder.setView(layout);
 
 
-        builder.setNegativeButton(""+context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("" + context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-        builder.setPositiveButton(""+context.getResources().getString(R.string.okey), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("" + context.getResources().getString(R.string.okey), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (status == 1) {
                     addNewLocationatFirebase(spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString());
                 } else {
-                    updateLocationatFirebase(location_id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString(), notification);
+                    updateLocationatFirebase(location_id, spn[0].getSelectedItem().toString(), spn[1].getSelectedItem().toString(), spn[2].getSelectedItem().toString(), false);
                 }
             }
         });
@@ -171,6 +160,31 @@ public class LocationRequest {
         dr.removeValue();
     }
 
+    private void StringProvinceRequest(String URL, final Spinner spinner) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Document doc = Jsoup.parse(response);
+                Elements tables = doc.select("table");
+                Elements rows = tables.get(1).select("a");
+                provinceList.clear();
+                Log.i("birinci", rows.get(0).text());
+                for (int i = 0; i < rows.size(); i++) {
+                    provinceList.add(rows.get(i).text().substring(0, rows.get(i).text().length() - 9));
+                    provinceSpinnerAdapter.notifyDataSetChanged();
+                }
+                spinner.setAdapter(provinceSpinnerAdapter);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        requestQueue.add(stringRequest);
+    }
+
     private void StringDistrictRequest(String URL, final Spinner spinner) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
@@ -180,8 +194,9 @@ public class LocationRequest {
                 Elements tables = doc.select("table");
                 Elements rows = tables.get(1).select("a");
                 districtList.clear();
+                Log.i("birinci", rows.get(0).text());
                 for (int i = 0; i < rows.size(); i++) {
-                    regionList.add(rows.get(i).text().substring(0, rows.get(i).text().length() - 10));
+                    districtList.add(rows.get(i).text());
                     districtSpinnerAdapter.notifyDataSetChanged();
                 }
                 spinner.setAdapter(districtSpinnerAdapter);
@@ -205,7 +220,7 @@ public class LocationRequest {
                 Elements rows = classes.first().select("a");
                 regionList.clear();
                 for (int i = 0; i < rows.size(); i++) {
-                    regionList.add(rows.get(i).text());
+                    regionList.add(rows.get(i).text().substring(0, rows.get(i).text().length() - 10));
                     regionSpinnerAdapter.notifyDataSetChanged();
                 }
 

@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.thesis.bmm.smartplug.EditPlugDialog;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.activities.GraphicActivity;
 import com.thesis.bmm.smartplug.model.Plugs;
@@ -41,18 +42,21 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
 
     @Override
     public void onBindViewHolder(RecyclerPlugListViewHolder holder, final int position) {
-        holder.txtRoomName.setText(plugsList.get(position).getPlugRoom());
-        holder.txtPlugName.setText(plugsList.get(position).getPlugName());
+        final DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Plugs").child(plugsList.get(position).getPlugID());
+        final Plugs plug = plugsList.get(position);
+        holder.txtRoomName.setText(plug.getPlugRoom());
+        holder.txtPlugName.setText(plug.getPlugName());
+        holder.plugStatus.setChecked(plug.getPlugStatus());
         holder.plugStatus.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                        DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Plugs").child(plugsList.get(position).getPlugID());
+
                         if (isChecked) {
-                            Plugs plugs = new Plugs(plugsList.get(position).getPlugID(), plugsList.get(position).getPlugName(), plugsList.get(position).getPlugRoom(), plugsList.get(position).getPlugCurrent(), true);
+                            Plugs plugs = new Plugs(plug.getPlugID(), plug.getPlugName(), plug.getPlugRoom(), plug.getPlugCurrent(), true);
                             dr.setValue(plugs);
                         } else {
-                            Plugs plugs = new Plugs(plugsList.get(position).getPlugID(), plugsList.get(position).getPlugName(), plugsList.get(position).getPlugRoom(), plugsList.get(position).getPlugCurrent(), false);
+                            Plugs plugs = new Plugs(plug.getPlugID(), plug.getPlugName(), plug.getPlugRoom(), plug.getPlugCurrent(), false);
                             dr.setValue(plugs);
                         }
                     }
@@ -62,11 +66,11 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, GraphicActivity.class);
-                intent.putExtra("plugID", plugsList.get(position).getPlugID());
+                intent.putExtra("plugID", plug.getPlugID());
                 context.startActivity(intent);
             }
         });
-        holder.update.setOnClickListener(new View.OnClickListener() {
+        holder.updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -76,7 +80,8 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                 alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //Priz güncelleme kodu
+                                EditPlugDialog plugDialog = new EditPlugDialog(context);
+                                plugDialog.selectPlugDialog(0, plug.getPlugID());
                             }
                         });
                 alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
@@ -88,7 +93,7 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                 alertDialog.show();
             }
         });
-        holder.delete.setOnClickListener(new View.OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -98,7 +103,8 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                 alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //Priz silme kodu
+                                EditPlugDialog plugDialog = new EditPlugDialog(context);
+                                plugDialog.deletePlugatFirebase(plug.getPlugID());
                             }
                         });
                 alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
