@@ -6,26 +6,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginRight="20dp"
-    android:layout_marginLeft="20dp"
+    android:background="@drawable/ana"
     tools:context="com.thesis.bmm.smartplug.activities.LoginActivity">
-    <ImageView
-        android:padding="20dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/icon"
+    <TextView
+        android:text="@string/app_name"
+        android:textSize="48sp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:gravity="center"
+        android:layout_marginTop="80dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/email"
         android:hint="@string/email"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/email"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textEmailAddress" />
-
     <EditText
         android:id="@+id/password"
         android:hint="@string/password"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/lock"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -34,31 +55,68 @@
         android:visibility="gone"
         android:id="@+id/passwordrepeature"
         android:hint="@string/passwordrepeature"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/lock"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword" />
-    <Spinner
+    <android.support.v7.widget.AppCompatSpinner
         android:visibility="gone"
         android:id="@+id/electricityuse"
+       android:theme="@style/mySpinnerItemStyle2"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:entries="@array/array_electricitytime">
-    </Spinner>
+        android:layout_height="wrap_content"
+        android:entries="@array/array_electricitytime"/>
+    <CheckBox
+        android:id="@+id/rebember"
+        android:text="@string/remember"
+        android:textColor="@color/white"
+        android:buttonTint="@color/white"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <Button
         android:id="@+id/login"
-        android:layout_margin="5dp"
         android:text="@string/login"
+        android:textColor="@color/pink"
+        android:background="@drawable/roundwhitebutton"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/signup"
+        android:text="@string/signup"
+        android:textColor="@color/white"
         android:background="@drawable/roundbutton"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
     <TextView
-        android:id="@+id/register"
-        android:gravity="center"
-        android:layout_margin="5dp"
-        android:text="@string/register"
+        android:id="@+id/forget"
+        android:text="@string/forgetyourpassword"
+        android:textColor="@color/white"
+        android:layout_marginTop="17dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 </LinearLayout>

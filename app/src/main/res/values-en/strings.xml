@@ -1,6 +1,7 @@
 ﻿<resources>
         
     <string name="app_name">SmartPlug</string>
+    <string name="wellcome">Wellcome</string>
         
     <string name="smart">Smart</string>
         
@@ -11,6 +12,7 @@
     <string name="password">Password</string>
         
     <string name="passwordrepeature">Password repeature</string>
+    <string name="remember">Remember Me</string>
         
     <string name="action_settings">Settings</string>
         
@@ -71,16 +73,17 @@
         
     <string name="no">No</string>
         
-    <string name="pleaseenterthenameoftheplug">Please enter the name of the socket!</string>
+    <string name="enterthenameoftheplug">Enter the name of the socket!</string>
         
     <string name="okey">OK</string>
     <string name="cancel">Cancel</string>
         
     <string name="interruption"> There is a power failure on the date</string>
         
-    <string name="login">Login</string>
+    <string name="login">Log In</string>
         
-    <string name="register"><u>Register</u></string>
+    <string name="signup"><u>Sign Up</u></string>
+    <string name="forgetyourpassword">Forget your password</string>
         
     <string-array name="array_name">
                 
@@ -108,7 +111,7 @@
             
     </string-array>
     <string-array name="array_electricitytime">
-        <item>When you use electricity most often</item>
+        <item>Electrical Schemes</item>
         <item>Morning hours</item>
         <item>Afternoon hours</item>
         <item>Evening hours</item>

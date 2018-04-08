@@ -34,7 +34,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:text="@string/text"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/mor"
                     android:textSize="18sp"
                     tools:ignore="MissingConstraints"
                     tools:layout_editor_absoluteX="36dp"
@@ -47,7 +47,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:text="@string/text"
-                    android:textColor="@color/mycolor2"
+                    android:textColor="@color/pink"
                     tools:ignore="MissingConstraints"
                     tools:layout_editor_absoluteX="36dp"
                     tools:layout_editor_absoluteY="41dp" />
