@@ -31,10 +31,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             MultiLanguage.setLocaleEn(MainActivity.this);
         }
         setContentView(R.layout.activity_main);
-        Toolbar toolbar =  findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.app_name);
-        getSupportActionBar().setIcon(R.drawable.smartplug);
         initView();
     }
 
@@ -47,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private void initEvent() {
         tabLayout.setupWithViewPager(vpFragments);
         tabLayout.addOnTabSelectedListener(this);
+        //tabLayout.setb
         ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         PlugsFragment plugsFragment = new PlugsFragment();
         NotificationFragment notificationFragment = new NotificationFragment();

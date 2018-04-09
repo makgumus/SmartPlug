@@ -7,11 +7,14 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
@@ -31,7 +34,7 @@ import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment {
     private View view;
-    private Spinner spnlanguage;
+    private AppCompatSpinner spnlanguage;
     private Button btnlanguagechange;
     private LocationRequest locationRequest;
     private FloatingActionButton locationAdd;
@@ -84,6 +87,7 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
+
     private void initView(View views) {
         locationAdd = views.findViewById(R.id.button_adress_add);
         spnlanguage = views.findViewById(R.id.spnlanguage);
@@ -119,6 +123,7 @@ public class SettingsFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
     }
 
     private void SavePreferencesString(String key, String value) {

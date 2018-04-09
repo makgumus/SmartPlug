@@ -36,8 +36,8 @@ public class EditPlugDialog {
         spinnerRoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         final Spinner spn = new Spinner(context);
         spn.setAdapter(spinnerRoomAdapter);
-        tvMessage[0].setText("Odayı Seçiniz");
-        tvMessage[1].setText("Prizin Adını Girin");
+        tvMessage[0].setText("" + context.getResources().getString(R.string.chooseroom));
+        tvMessage[1].setText("" + context.getResources().getString(R.string.enterthenameoftheplug));
         final EditText plugName = new EditText(context);
         for (int i = 0; i < 2; i++) {
             tvMessage[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
@@ -93,7 +93,7 @@ public class EditPlugDialog {
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("" + context.getResources().getString(R.string.error));
-        builder.setMessage("" + context.getResources().getString(R.string.pleaseenterthenameoftheplug));
+        builder.setMessage("" + context.getResources().getString(R.string.enterthenameoftheplug));
         String positiveText = "" + context.getResources().getString(R.string.okey);
         builder.setPositiveButton(positiveText,
                 new DialogInterface.OnClickListener() {

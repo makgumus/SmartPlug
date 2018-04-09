@@ -3,11 +3,10 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/mor</item>
+        <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/mycolor2</item>
     </style>
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -20,18 +19,17 @@
 
     <style name="Theme.MyTheme" parent="Theme.AppCompat.Light">
         <!-- colorPrimary is used for the default action bar background -->
-        <item name="colorPrimary">@color/mycolor</item>
-
-        <!-- colorPrimaryDark is used for the status bar -->
-        <item name="colorPrimaryDark">@color/beyaz</item>
-
-        <!-- colorAccent is used as the default value for colorControlActivated,
-             which is used to tint widgets -->
+        <item name="colorPrimary">@color/mor</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/mycolor2</item>
-
-        <!-- You can also set colorControlNormal, colorControlActivated
-             colorControlHighlight, and colorSwitchThumbNormal. -->
-
+    </style>
+    <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">#AF4FCD</item>
+    </style>
+    <style name="mySpinnerItemStyle2" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">#DE62A0</item>
     </style>
 
 </resources>

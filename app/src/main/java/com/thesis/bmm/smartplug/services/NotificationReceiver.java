@@ -24,7 +24,6 @@ import com.thesis.bmm.smartplug.activities.MainActivity;
 
 public class NotificationReceiver extends BroadcastReceiver {
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Interrupts");
-    MainActivity mainActivity = new MainActivity();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,7 +39,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private void getData(final Context cntxt) {
         final InterruptRequest interrupt = new InterruptRequest();
-        mainActivity.vpFragments.setCurrentItem(1);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
