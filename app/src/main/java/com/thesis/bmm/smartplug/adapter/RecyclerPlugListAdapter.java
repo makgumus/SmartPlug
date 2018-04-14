@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +44,9 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
 
     @Override
     public void onBindViewHolder(RecyclerPlugListViewHolder holder, final int position) {
-        final DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Plugs").child(plugsList.get(position).getPlugID());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String  datauserid= sharedPreferences.getString("userID", "Yok") ;
+        final DatabaseReference dr = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Plugs").child(plugsList.get(position).getPlugID());
         final Plugs plug = plugsList.get(position);
         holder.txtRoomName.setText(plug.getPlugRoom());
         holder.txtPlugName.setText(plug.getPlugName());
