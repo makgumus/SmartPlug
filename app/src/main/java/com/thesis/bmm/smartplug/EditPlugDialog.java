@@ -3,6 +3,7 @@ package com.thesis.bmm.smartplug;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -12,11 +13,15 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.thesis.bmm.smartplug.model.ElectricitySchedule;
 import com.thesis.bmm.smartplug.model.Plugs;
 
 public class EditPlugDialog {
     private ArrayAdapter spinnerRoomAdapter;
     private Context context;
+    private DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Plugs");
+    private DatabaseReference dr = FirebaseDatabase.getInstance().getReference("PieChartData");
+    private Intent intent;
 
     //int status=1  >> AddPlug
     //int status=0  >> UpdatePlug
@@ -73,21 +78,20 @@ public class EditPlugDialog {
 
     private void addNewPlugatFirebase(String plugName, String roomName) //Firebase'de yeni bir priz açma
     {
-        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Plugs");
         String id = databaseReferencePlug.push().getKey();
         Plugs plug = new Plugs(id, plugName.toString(), roomName.toString(), "0", false);
         databaseReferencePlug.child(id).setValue(plug);
+        chartDataatFirebase(id);
     }
 
     public void updatePlugatFirebase(String plugID, String plugName, String roomName) {
-        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Plugs").child(plugID);
         Plugs plug = new Plugs(plugID, plugName, roomName, "0", false);
-        databaseReferencePlug.setValue(plug);
+        databaseReferencePlug.child(plugID).setValue(plug);
     }
 
     public void deletePlugatFirebase(String id) {
-        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Plugs").child(id);
-        databaseReferencePlug.removeValue();
+        databaseReferencePlug.child(id).removeValue();
+        dr.child(id).removeValue();
     }
 
     private void showAlertDialog() {
@@ -106,5 +110,13 @@ public class EditPlugDialog {
         AlertDialog dialog = builder.create();
         // display dialog
         dialog.show();
+    }
+
+    private void chartDataatFirebase(String id) {
+        for (int i = 1; i <= 12; i++) {
+            ElectricitySchedule schedule = new ElectricitySchedule("0", "0", "0");
+            dr.child(id).child(String.valueOf(i)).setValue(schedule);
+        }
+
     }
 }

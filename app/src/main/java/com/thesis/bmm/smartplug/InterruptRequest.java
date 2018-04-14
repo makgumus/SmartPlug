@@ -69,9 +69,9 @@ public class InterruptRequest {
                             Log.i("dateTimeNowToString()", dateTimeNowToString());
                             Log.i("district.tolowercase", district.toLowerCase());
                             Log.i("county.tolowercase", county.toLowerCase());
-                            Log.i("region.tolowercase", region.toLowerCase());
+                            Log.i("region.tolowercase", forCharacterRevert.convertToCharacter(region));
                             Log.i("date", date);
-                            Log.i("neighborhod.tolowercase", neighborhood.toLowerCase());
+                            Log.i("neighborhod.tolowercase", forCharacterRevert.convertToCharacter(neighborhood));
                             if (date.equals(dateTimeNowToString()) && district.toLowerCase().equals(county.toLowerCase()) && forCharacterRevert.convertToCharacter(region).contains(forCharacterRevert.convertToCharacter(neighborhood))) {
                                 electricityInterrupt.setDate(convertToDate(date));
                                 electricityInterrupt.setProvince(province);
