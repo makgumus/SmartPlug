@@ -1,6 +1,8 @@
 package com.thesis.bmm.smartplug.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +63,9 @@ public class NotificationFragment extends Fragment {
     }
 
     private void getInterruptDatafromFirebase() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Interrupts");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String  datauserid= sharedPreferences.getString("userID", "Yok") ;
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Interrupts");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -30,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <android.support.v7.widget.AppCompatSpinner
             android:theme="@style/mySpinnerItemStyle"
             android:id="@+id/spnlanguage"
@@ -40,15 +39,42 @@
             android:layout_weight="1"
             android:entries="@array/array_language" />
         <Button
-            android:visibility="gone"
             android:id="@+id/btnlanguagechange"
             android:text="@string/change"
+            android:textColor="@color/white"
             android:background="@drawable/button"
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_about3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="6dp" />
+        <TextView
             android:layout_width="0sp"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"  />
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:text="@string/userprofile"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/logout"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="@string/logout"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,4 +98,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </android.support.v7.widget.RecyclerView>
+
 </LinearLayout>

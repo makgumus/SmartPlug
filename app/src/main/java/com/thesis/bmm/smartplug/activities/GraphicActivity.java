@@ -1,13 +1,15 @@
 package com.thesis.bmm.smartplug.activities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -42,16 +44,20 @@ public class GraphicActivity extends AppCompatActivity {
     private LineChart realTimeCurrentGraph;
     private PieChart dailyCurrentGraph;
     private String plugId, plugLiveCurrent;
-    private ImageView previousDayButton, nextDayButton;
+    private AppCompatImageView previousDayButton, nextDayButton;
     private DatabaseReference dr, drPlugs;
     private TextView calendarTextView, plugCurrentText, useOfMonthlyEnergy;
     private Calendar calendar;
     private SimpleDateFormat df;
+    SharedPreferences sharedPreferences ;
+    String  datauserid ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graphic);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        datauserid= sharedPreferences.getString("userID", "Yok") ;
         initView();
     }
 
@@ -63,6 +69,8 @@ public class GraphicActivity extends AppCompatActivity {
         nextDayButton = findViewById(R.id.afterBtn);
         calendarTextView = findViewById(R.id.dateTV);
         useOfMonthlyEnergy = findViewById(R.id.energyTV);
+        nextDayButton.setImageResource(R.drawable.ic_chevron_right_black_24dp);
+        previousDayButton.setImageResource(R.drawable.ic_chevron_left_black_24dp);
         initPieChartStyle();
         initEvent();
     }
@@ -72,7 +80,7 @@ public class GraphicActivity extends AppCompatActivity {
         df = new SimpleDateFormat("MM");
         Bundle extras = getIntent().getExtras();
         plugId = extras.getString("plugID");
-        drPlugs = FirebaseDatabase.getInstance().getReference().child("Plugs");
+        drPlugs = FirebaseDatabase.getInstance().getReference().child(""+datauserid).child("Plugs");
         String thisMonth = df.format(calendar.getTime());
         calendarTextView.setText(convertToMonth(thisMonth));
         getPieChartData(checkMonthandDay(thisMonth));
@@ -109,40 +117,40 @@ public class GraphicActivity extends AppCompatActivity {
         String value = null;
         switch (monthOfYear) {
             case "01":
-                value = "Ocak";
+                value = ""+getResources().getString(R.string.january);
                 break;
             case "02":
-                value = "Şubat";
+                value = ""+getResources().getString(R.string.february);
                 break;
             case "03":
-                value = "Mart";
+                value = ""+getResources().getString(R.string.march);
                 break;
             case "04":
-                value = "Nisan";
+                value = ""+getResources().getString(R.string.april);
                 break;
             case "05":
-                value = "Mayıs";
+                value = ""+getResources().getString(R.string.may);
                 break;
             case "06":
-                value = "Haziran";
+                value = ""+getResources().getString(R.string.june);
                 break;
             case "07":
-                value = "Temmuz";
+                value = ""+getResources().getString(R.string.july);
                 break;
             case "08":
-                value = "Ağustos";
+                value = ""+getResources().getString(R.string.august);
                 break;
             case "09":
-                value = "Eylül";
+                value = ""+getResources().getString(R.string.september);
                 break;
             case "10":
-                value = "Ekim";
+                value = ""+getResources().getString(R.string.october);
                 break;
             case "11":
-                value = "Kasım";
+                value = ""+getResources().getString(R.string.november);
                 break;
             case "12":
-                value = "Aralık";
+                value = ""+getResources().getString(R.string.december);
                 break;
         }
         return value;
@@ -256,7 +264,7 @@ public class GraphicActivity extends AppCompatActivity {
 
     private void getPieChartData(final String month) {
         electricitySchedulesList = new ArrayList<>();
-        dr = FirebaseDatabase.getInstance().getReference("PieChartData").child(plugId).child(month);
+        dr = FirebaseDatabase.getInstance().getReference(""+datauserid).child("PieChartData").child(plugId).child(month);
         dr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -280,7 +288,7 @@ public class GraphicActivity extends AppCompatActivity {
         yValues.add(new PieEntry(Float.parseFloat(t1), "T1"));
         yValues.add(new PieEntry(Float.parseFloat(t2), "T2"));
         yValues.add(new PieEntry(Float.parseFloat(t3), "T3"));
-        PieDataSet dataSet = new PieDataSet(yValues, "Elektrik Kullanım Aralıkları");
+        PieDataSet dataSet = new PieDataSet(yValues, ""+getResources().getString(R.string.elektricrange));
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         dataSet.setColors(ColorTemplate.JOYFUL_COLORS);

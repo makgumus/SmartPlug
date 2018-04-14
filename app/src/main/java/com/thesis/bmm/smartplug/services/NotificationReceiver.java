@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +25,9 @@ import com.thesis.bmm.smartplug.activities.MainActivity;
  */
 
 public class NotificationReceiver extends BroadcastReceiver {
-    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Interrupts");
+    DatabaseReference databaseReference;
+    SharedPreferences sharedPreferences ;
+    String  datauserid ;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -31,6 +35,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         String province = intent.getStringExtra("Province");
         String district = intent.getStringExtra("District");
         String region = intent.getStringExtra("Region");
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        datauserid= sharedPreferences.getString("userID", "Yok") ;
+        databaseReference = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Interrupts");
         databaseReference.child(locationID).removeValue();
         InterruptRequest interruptRequest = new InterruptRequest(context, province, district, region);
         interruptRequest.request(locationID);
@@ -39,6 +46,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private void getData(final Context cntxt) {
         final InterruptRequest interrupt = new InterruptRequest();
+        databaseReference = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Interrupts");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
