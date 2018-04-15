@@ -6,8 +6,8 @@
     <string name="email">Email</string>
     <string name="password">Şifre</string>
     <string name="passwordrepeature">Şifre Tekrar</string>
-    <string name="remember">Remember Me</string>
-    <string name="forgetyourpassword">Şifremi unuttum</string>
+    <string name="remember">Beni Hatırla</string>
+    <string name="forgetyourpassword"><u>Şifremi unuttum</u></string>
     <string name="action_settings">Settings</string>
     <string name="text">Text</string>
     <string name="chooseroom">Odayı Seçiniz</string>
@@ -23,11 +23,12 @@
     <string name="current">Akım(A):</string>
     <string name="languagepart">Dil Kısmı</string>
     <string name="languagechangetitle">Dil Değiştirme</string>
-    <string name="accont">I have an account</string>
+    <string name="accont"><u>Hesabım var</u></string>
     <string name="emailrequired">Email gereklidir</string>
     <string name="emailplease">Lütfen geçerli eposta adresini giriniz</string>
     <string name="passwordrequired">Şifre gereklidir</string>
     <string name="passwordlen">Minimum şifre uzunluğu 6 olmalı</string>
+    <string name="passworderror">Şifreler aynı değil</string>
     <string name="registed">Zaten kayıtlısınız</string>
     <string name="elektricrange">Elektrik Kullanım Aralıkları</string>
     <string name ="january">Ocak</string>

@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:entries="@array/array_electricitytime"/>
     <CheckBox
-        android:id="@+id/rebember"
+        android:id="@+id/remember"
         android:text="@string/remember"
         android:textColor="@color/white"
         android:buttonTint="@color/white"

@@ -13,6 +13,8 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -25,15 +27,23 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.app.MultiLanguage;
+import com.thesis.bmm.smartplug.model.Locations;
 
 public class LoginActivity extends AppCompatActivity {
     Button login;
     TextView signup,forget;
     AppCompatSpinner electricityuse;
-    EditText editTextEmail, editTextPassword,passwordrepeature;
+    EditText editTextEmail, editTextPassword,editpasswordrepeature;
+    CheckBox remember;
     ProgressBar progressBar;
+    FirebaseUser user;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +60,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         editTextEmail=findViewById(R.id.email);
         editTextPassword=findViewById(R.id.password);
-        passwordrepeature=findViewById(R.id.passwordrepeature);
+        editpasswordrepeature=findViewById(R.id.passwordrepeature);
         login=findViewById(R.id.login);
         signup=findViewById(R.id.signup);
+        remember=findViewById(R.id.remember);
         forget=findViewById(R.id.forget);
         electricityuse=findViewById(R.id.electricityuse);
         progressBar =  findViewById(R.id.progressbar);
@@ -71,10 +82,23 @@ public class LoginActivity extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                passwordrepeature.setVisibility(View.VISIBLE);
+                editpasswordrepeature.setVisibility(View.VISIBLE);
                 electricityuse.setVisibility(View.VISIBLE);
                 login.setVisibility(View.GONE);
                 forget.setText(""+getResources().getString(R.string.accont));
+                forget.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        login.setVisibility(View.VISIBLE);
+                        login.setBackgroundResource(R.drawable.roundwhitebutton);
+                        login.setTextColor(getResources().getColor(R.color.pinklight));
+                        signup.setBackgroundResource(R.drawable.roundbutton);
+                        signup.setTextColor(getResources().getColor(R.color.white));
+                        editpasswordrepeature.setVisibility(View.GONE);
+                        electricityuse.setVisibility(View.GONE);
+                        forget.setText(""+getResources().getString(R.string.forgetyourpassword));
+                    }
+                });
                 login.setBackgroundResource(R.drawable.roundbutton);
                 login.setTextColor(getResources().getColor(R.color.white));
                 signup.setBackgroundResource(R.drawable.roundwhitebutton);
@@ -83,20 +107,74 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
     }
     private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        String passwordrepeature = editpasswordrepeature.getText().toString().trim();
 
-        criterion(email,password);
+        if (email.isEmpty()) {
+            editTextEmail.setError(""+getResources().getString(R.string.emailrequired));
+            editTextEmail.requestFocus();
+            return;
+        }
 
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError(""+getResources().getString(R.string.emailplease));
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            editTextPassword.setError(""+getResources().getString(R.string.passwordrequired));
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        if (passwordrepeature.isEmpty()) {
+            editpasswordrepeature.setError(""+getResources().getString(R.string.passwordrequired));
+            editpasswordrepeature.requestFocus();
+            return;
+        }
+        if(password.equals(""+passwordrepeature))
+        {
+
+        }
+        else{
+            editpasswordrepeature.setError(""+getResources().getString(R.string.passworderror));
+            editpasswordrepeature.requestFocus();
+            return;
+        }
+        if (password.length() < 6) {
+            editTextPassword.setError(""+getResources().getString(R.string.passwordlen));
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    user = FirebaseAuth.getInstance().getCurrentUser();
                     SavePreferencesString("userID", ""+user.getUid());
+                    /* checkbox tıklayınca çalışmıyor
+                    remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                             @Override
+                             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                                 DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
+                                 if (buttonView.isChecked())
+                                 {
+                                     databaseReferencePlug.setValue("on");
+                                 }
+                                 else
+                                 {
+                                     databaseReferencePlug.setValue("off");
+                                 }
+                             }
+                    });*/
                     finish();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -119,24 +197,6 @@ public class LoginActivity extends AppCompatActivity {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        criterion(email,password);
-
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                progressBar.setVisibility(View.GONE);
-                if (task.isSuccessful()) {
-                    finish();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-    private void criterion(String email,String password){
         if (email.isEmpty()) {
             editTextEmail.setError(""+getResources().getString(R.string.emailrequired));
             editTextEmail.requestFocus();
@@ -162,6 +222,20 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         progressBar.setVisibility(View.VISIBLE);
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                progressBar.setVisibility(View.GONE);
+                if (task.isSuccessful()) {
+                    finish();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
     private void SavePreferencesString(String key, String value){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -173,9 +247,28 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (mAuth.getCurrentUser() != null) {
+            /*DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
+            databaseReferencePlug.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String value = dataSnapshot.getValue(String.class);
+                    if(value.equals("on"))
+                    {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                    if(value.equals("off"))
+                    {
+
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });*/
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
-            // Anasayfa da oturum kapatma kodu.FirebaseAuth.getInstance().signOut();
         }
 
     }

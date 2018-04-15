@@ -68,8 +68,7 @@
     </LinearLayout>
     <TextView
         android:id="@+id/logout"
-        android:layout_margin="5dp"
-        android:gravity="center"
+        android:layout_margin="10dp"
         android:text="@string/logout"
         android:textColor="@color/white"
         android:textSize="17sp"
