@@ -243,6 +243,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
+                    user = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference databaseReferencePlug2 = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
                     if(account!=null)
                         databaseReferencePlug2.setValue(""+account);
