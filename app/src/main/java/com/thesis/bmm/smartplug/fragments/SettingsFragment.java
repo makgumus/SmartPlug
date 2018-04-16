@@ -129,7 +129,7 @@ public class SettingsFragment extends Fragment {
         btnlanguagechange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (spnlanguage.getSelectedItem().toString().equals("Türkçe") || spnlanguage.getSelectedItem().toString().equals("Turkish")) {
+                if (spnlanguage.getSelectedItemPosition()==0) {
                     SavePreferencesString("dil", "Turkish");
                 } else {
                     SavePreferencesString("dil", "English");

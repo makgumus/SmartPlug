@@ -84,12 +84,14 @@
         android:text="@string/remember"
         android:textColor="@color/white"
         android:buttonTint="@color/white"
+        android:onClick="itemClicked"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
         android:gravity="center_vertical"
         android:padding="8dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:ignore="OnClick" />
     <Button
         android:id="@+id/login"
         android:text="@string/login"

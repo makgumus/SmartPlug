@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     CheckBox remember;
     ProgressBar progressBar;
     FirebaseUser user;
+    String account;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         electricityuse=findViewById(R.id.electricityuse);
         progressBar =  findViewById(R.id.progressbar);
         mAuth = FirebaseAuth.getInstance();
+        account=null;
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,8 +108,26 @@ public class LoginActivity extends AppCompatActivity {
                 registerUser();
             }
         });
+        /*forget.setOnClickListener(new View.OnClickListener() { //şifremi unuttum
+            @Override
+            public void onClick(View view) {
+                editTextPassword.setText(""+getResources().getString(R.string.newpassword));
+                editpasswordrepeature.setVisibility(View.VISIBLE);
+                editpasswordrepeature.setText(""+getResources().getString(R.string.newpassword));
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String newPassword = ""+editTextPassword;
 
-
+                user.updatePassword(newPassword)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                   Toast.makeText(LoginActivity.this,"User password updated.",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });*/
     }
     private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
@@ -160,21 +180,20 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     user = FirebaseAuth.getInstance().getCurrentUser();
                     SavePreferencesString("userID", ""+user.getUid());
-                    /* checkbox tıklayınca çalışmıyor
-                    remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                             @Override
-                             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                                 DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
-                                 if (buttonView.isChecked())
-                                 {
-                                     databaseReferencePlug.setValue("on");
-                                 }
-                                 else
-                                 {
-                                     databaseReferencePlug.setValue("off");
-                                 }
-                             }
-                    });*/
+                    DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("usertarife");
+                    if(electricityuse.getSelectedItemPosition()==1) {
+                        databaseReferencePlug.setValue("T1");
+                    }
+                    if(electricityuse.getSelectedItemPosition()==2) {
+                        databaseReferencePlug.setValue("T2");
+                    }
+                    if(electricityuse.getSelectedItemPosition()==3) {
+                        databaseReferencePlug.setValue("T3");
+                    }
+                    DatabaseReference databaseReferencePlug2 = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
+                    if(account!=null)
+                        databaseReferencePlug2.setValue(""+account);
+
                     finish();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -186,13 +205,10 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), " "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
         });
-
     }
-
     private void userLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
@@ -227,6 +243,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
+                    DatabaseReference databaseReferencePlug2 = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
+                    if(account!=null)
+                        databaseReferencePlug2.setValue(""+account);
                     finish();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -247,29 +266,34 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (mAuth.getCurrentUser() != null) {
-            /*DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String  datauserid= sharedPreferences.getString("userID", "Yok") ;
+            DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("account");
             databaseReferencePlug.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String value = dataSnapshot.getValue(String.class);
-                    if(value.equals("on"))
-                    {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-                    if(value.equals("off"))
-                    {
-
+                    if(value!=null) {
+                        if (value.equals("on")) {
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            });*/
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
+            });
         }
-
+    }
+    public void itemClicked(View v) {
+        CheckBox checkBox = (CheckBox)v;
+        if(checkBox.isChecked()){
+          account="on";
+        }
+        else {
+            account="off";
+        }
     }
 }
