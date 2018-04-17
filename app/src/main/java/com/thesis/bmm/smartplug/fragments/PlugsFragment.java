@@ -1,7 +1,9 @@
 package com.thesis.bmm.smartplug.fragments;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -87,7 +89,9 @@ public class PlugsFragment extends Fragment {
     }
 
     private void initView() {
-        databaseReferencePlugs = FirebaseDatabase.getInstance().getReference("Plugs");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String  datauserid= sharedPreferences.getString("userID", "Yok") ;
+        databaseReferencePlugs = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Plugs");
         recyclerPlugsListView = view.findViewById(R.id.recycler_plugsList);
         addNewPlugButton = view.findViewById(R.id.addNewPlugButton);
         initEvent();

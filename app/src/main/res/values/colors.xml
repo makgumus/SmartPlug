@@ -16,4 +16,7 @@
     <color name="white">#ffffff</color>
     <color name="pink">#CF5AB3</color>
     <color name="mor">#9E4ADE</color>
+    <color name="pinklight">#EB678D</color>
+    <color name="buttoncolor">#E0546E</color>
+    <color name="buttoncolor3">#C658B6</color>
 </resources>

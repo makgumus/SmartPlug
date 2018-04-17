@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -19,14 +21,20 @@ import com.thesis.bmm.smartplug.model.Plugs;
 public class EditPlugDialog {
     private ArrayAdapter spinnerRoomAdapter;
     private Context context;
-    private DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Plugs");
-    private DatabaseReference dr = FirebaseDatabase.getInstance().getReference("PieChartData");
+    private DatabaseReference databaseReferencePlug ;
+    private DatabaseReference dr ;
     private Intent intent;
 
     //int status=1  >> AddPlug
     //int status=0  >> UpdatePlug
     public EditPlugDialog(Context context) {
         this.context = context;
+        SharedPreferences sharedPreferences ;
+        String  datauserid ;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        datauserid= sharedPreferences.getString("userID", "Yok") ;
+        databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Plugs");
+        dr = FirebaseDatabase.getInstance().getReference(""+datauserid).child("PieChartData");
     }
 
     public void selectPlugDialog(final int status, final String PlugID) {
