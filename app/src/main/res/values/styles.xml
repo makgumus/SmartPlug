@@ -25,11 +25,15 @@
     </style>
     <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@color/white</item>
-        <item name="android:background">#AF4FCD</item>
+        <item name="android:background">#A84CD3</item>
     </style>
     <style name="mySpinnerItemStyle2" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@color/white</item>
         <item name="android:background">#DE62A0</item>
+    </style>
+    <style name="mySpinnerItemStyle3" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">#CB5AB2</item>
     </style>
 
 </resources>

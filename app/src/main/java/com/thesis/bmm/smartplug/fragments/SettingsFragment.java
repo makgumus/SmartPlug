@@ -1,5 +1,7 @@
 package com.thesis.bmm.smartplug.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,11 +15,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thesis.bmm.smartplug.LocationRequest;
 import com.thesis.bmm.smartplug.R;
+import com.thesis.bmm.smartplug.activities.LoginActivity;
 import com.thesis.bmm.smartplug.activities.MainActivity;
 import com.thesis.bmm.smartplug.adapter.RecyclerLocationListAdapter;
 import com.thesis.bmm.smartplug.model.Locations;
@@ -34,8 +36,8 @@ import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment {
     private View view;
-    private AppCompatSpinner spnlanguage;
-    private Button btnlanguagechange;
+    private AppCompatSpinner spnlanguage,spntarife;
+    private Button btnlanguagechange,btntarifechange;
     private LocationRequest locationRequest;
     private FloatingActionButton locationAdd;
     private DatabaseReference locationDatabaseReference;
@@ -43,6 +45,7 @@ public class SettingsFragment extends Fragment {
     private RecyclerLocationListAdapter recyclerLocationListAdapter;
     private RecyclerView recyclerLocationsListView;
     private RecyclerView.LayoutManager recyclerLayoutManager;
+    private TextView logout;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -91,18 +94,25 @@ public class SettingsFragment extends Fragment {
     private void initView(View views) {
         locationAdd = views.findViewById(R.id.button_adress_add);
         spnlanguage = views.findViewById(R.id.spnlanguage);
+        spntarife=views.findViewById(R.id.spntarife);
         btnlanguagechange = views.findViewById(R.id.btnlanguagechange);
+        btntarifechange=views.findViewById(R.id.btntarifechange);
+        logout=views.findViewById(R.id.logout);
         AppCompatImageView image = views.findViewById(R.id.iv_about);
         AppCompatImageView image2 = views.findViewById(R.id.iv_about2);
+        AppCompatImageView image3 =views.findViewById(R.id.iv_about3);
         image.setImageResource(R.drawable.ic_language_black_24dp);
         image2.setImageResource(R.drawable.ic_notifications_active_black_24dp);
+        image3.setImageResource(R.drawable.ic_account_circle_black_24dp);
         recyclerLocationsListView = views.findViewById(R.id.recycler_locationsList);
         initEvent();
     }
 
     private void initEvent() {
         locationsList = new ArrayList<>();
-        locationDatabaseReference = FirebaseDatabase.getInstance().getReference("Locations");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String  datauserid= sharedPreferences.getString("userID", "Yok") ;
+        locationDatabaseReference = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Locations");
         locationAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,22 +120,84 @@ public class SettingsFragment extends Fragment {
                 locationRequest.selectAdressDialog(1, "null");
             }
         });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("usertarife");
+        databaseReferencePlug.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                if(value!=null) {
+                    if (value.equals("T1")) {
+                      spntarife.setSelection(1);
+                    }
+                    if (value.equals("T2")) {
+                        spntarife.setSelection(2);
+                    }
+                    if (value.equals("T3")) {
+                        spntarife.setSelection(3);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         btnlanguagechange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (spnlanguage.getSelectedItem().toString().equals("Türkçe") || spnlanguage.getSelectedItem().toString().equals("Turkish")) {
+                if (spnlanguage.getSelectedItemPosition()==0) {
                     SavePreferencesString("dil", "Turkish");
                 } else {
                     SavePreferencesString("dil", "English");
                 }
-                Intent refresh = new Intent(getContext(), MainActivity.class);
-                startActivity(refresh);
-                getActivity().finish();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                alertDialog.setTitle(""+getContext().getResources().getString(R.string.languagechangetitle));
+                alertDialog.setMessage(""+getContext().getResources().getString(R.string.languagechange));
+                alertDialog.setIcon(R.drawable.smartplug);
+                alertDialog.setPositiveButton(""+getContext().getResources().getString(R.string.yes),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent refresh = new Intent(getContext(), MainActivity.class);
+                                startActivity(refresh);
+                                getActivity().finish();
+                            }
+                        });
+                alertDialog.setNegativeButton(""+getContext().getResources().getString(R.string.no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
             }
         });
-
+        btntarifechange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("usertarife");
+                if(spntarife.getSelectedItemPosition()==1)
+                {
+                    databaseReferencePlug.setValue("T1");
+                }
+                if(spntarife.getSelectedItemPosition()==2)
+                {
+                    databaseReferencePlug.setValue("T2");
+                }
+                if(spntarife.getSelectedItemPosition()==3)
+                {
+                    databaseReferencePlug.setValue("T3");
+                }
+            }
+        });
     }
-
     private void SavePreferencesString(String key, String value) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -85,7 +85,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorPrimary" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/beforeBtn"
             android:layout_width="18dp"
             android:layout_height="18dp"
@@ -93,9 +93,9 @@
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@+id/dateTV"
             android:layout_toStartOf="@+id/dateTV"
-            android:background="@drawable/ic_chevron_left_black_24dp" />
+            />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/afterBtn"
             android:layout_width="18dp"
             android:layout_height="18dp"
@@ -103,7 +103,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
-            android:background="@drawable/ic_chevron_right_black_24dp" />
+           />
 
     </RelativeLayout>
 

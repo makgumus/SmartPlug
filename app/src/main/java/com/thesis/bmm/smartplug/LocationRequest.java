@@ -3,6 +3,8 @@ package com.thesis.bmm.smartplug;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -34,6 +36,8 @@ import java.util.ArrayList;
 
 public class LocationRequest {
     Context context;
+    private SharedPreferences sharedPreferences ;
+    private String  datauserid ;
     private ArrayList provinceList, districtList, regionList;
     private ArrayAdapter<String> districtSpinnerAdapter, regionSpinnerAdapter, provinceSpinnerAdapter;
     private String city, county;
@@ -143,20 +147,26 @@ public class LocationRequest {
     }
 
     private void addNewLocationatFirebase(String city, String district, String region) {
-        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("Locations");
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        datauserid= sharedPreferences.getString("userID", "Yok") ;
+        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Locations");
         String id = databaseReferencePlug.push().getKey();
         Locations location = new Locations(id, city, district, region, false);
         databaseReferencePlug.child(id).setValue(location);
     }
 
     public void updateLocationatFirebase(String id, String city, String district, String region, Boolean status) {
-        DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Locations").child(id);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        datauserid= sharedPreferences.getString("userID", "Yok") ;
+        DatabaseReference dr = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Locations").child(id);
         Locations location = new Locations(id, city, district, region, status);
         dr.setValue(location);
     }
 
     public void deleteLocation(String id) {
-        DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Locations").child(id);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        datauserid= sharedPreferences.getString("userID", "Yok") ;
+        DatabaseReference dr = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Locations").child(id);
         dr.removeValue();
     }
 
@@ -223,7 +233,6 @@ public class LocationRequest {
                     regionList.add(rows.get(i).text().substring(0, rows.get(i).text().length() - 10));
                     regionSpinnerAdapter.notifyDataSetChanged();
                 }
-
                 spinner.setAdapter(regionSpinnerAdapter);
             }
         }, new Response.ErrorListener() {
