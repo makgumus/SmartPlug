@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -85,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+    @Override
+    public void onBackPressed() {
+        ActivityCompat.finishAffinity(MainActivity.this);
+        return;
     }
 
 }
