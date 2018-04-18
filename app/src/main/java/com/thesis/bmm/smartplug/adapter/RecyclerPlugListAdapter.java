@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.thesis.bmm.smartplug.EditPlugDialog;
+import com.thesis.bmm.smartplug.FirebaseUserInformation;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.activities.GraphicActivity;
 import com.thesis.bmm.smartplug.model.Plugs;
@@ -42,7 +43,8 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
 
     @Override
     public void onBindViewHolder(RecyclerPlugListViewHolder holder, final int position) {
-        final DatabaseReference dr = FirebaseDatabase.getInstance().getReference("Plugs").child(plugsList.get(position).getPlugID());
+        FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(context);
+        final DatabaseReference dr = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs").child(plugsList.get(position).getPlugID());
         final Plugs plug = plugsList.get(position);
         holder.txtRoomName.setText(plug.getPlugRoom());
         holder.txtPlugName.setText(plug.getPlugName());

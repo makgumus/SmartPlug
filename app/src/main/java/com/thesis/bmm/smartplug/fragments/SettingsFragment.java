@@ -1,11 +1,6 @@
 package com.thesis.bmm.smartplug.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
@@ -16,18 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.thesis.bmm.smartplug.FirebaseUserInformation;
 import com.thesis.bmm.smartplug.LocationRequest;
 import com.thesis.bmm.smartplug.R;
-import com.thesis.bmm.smartplug.activities.LoginActivity;
-import com.thesis.bmm.smartplug.activities.MainActivity;
 import com.thesis.bmm.smartplug.adapter.RecyclerLocationListAdapter;
 import com.thesis.bmm.smartplug.model.Locations;
 
@@ -36,8 +28,8 @@ import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment {
     private View view;
-    private AppCompatSpinner spnlanguage,spntarife;
-    private Button btnlanguagechange,btntarifechange;
+    private AppCompatSpinner spntarife;
+    private Button btntarifechange;
     private LocationRequest locationRequest;
     private FloatingActionButton locationAdd;
     private DatabaseReference locationDatabaseReference;
@@ -45,7 +37,6 @@ public class SettingsFragment extends Fragment {
     private RecyclerLocationListAdapter recyclerLocationListAdapter;
     private RecyclerView recyclerLocationsListView;
     private RecyclerView.LayoutManager recyclerLayoutManager;
-    private TextView logout;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -93,15 +84,10 @@ public class SettingsFragment extends Fragment {
 
     private void initView(View views) {
         locationAdd = views.findViewById(R.id.button_adress_add);
-        spnlanguage = views.findViewById(R.id.spnlanguage);
         spntarife=views.findViewById(R.id.spntarife);
-        btnlanguagechange = views.findViewById(R.id.btnlanguagechange);
         btntarifechange=views.findViewById(R.id.btntarifechange);
-        logout=views.findViewById(R.id.logout);
-        AppCompatImageView image = views.findViewById(R.id.iv_about);
         AppCompatImageView image2 = views.findViewById(R.id.iv_about2);
         AppCompatImageView image3 =views.findViewById(R.id.iv_about3);
-        image.setImageResource(R.drawable.ic_language_black_24dp);
         image2.setImageResource(R.drawable.ic_notifications_active_black_24dp);
         image3.setImageResource(R.drawable.ic_account_circle_black_24dp);
         recyclerLocationsListView = views.findViewById(R.id.recycler_locationsList);
@@ -110,9 +96,8 @@ public class SettingsFragment extends Fragment {
 
     private void initEvent() {
         locationsList = new ArrayList<>();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final String  datauserid= sharedPreferences.getString("userID", "Yok") ;
-        locationDatabaseReference = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Locations");
+        final FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(getContext());
+        locationDatabaseReference = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Locations");
         locationAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,15 +105,7 @@ public class SettingsFragment extends Fragment {
                 locationRequest.selectAdressDialog(1, "null");
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("usertarife");
+        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("usertarife");
         databaseReferencePlug.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -150,39 +127,11 @@ public class SettingsFragment extends Fragment {
 
             }
         });
-        btnlanguagechange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (spnlanguage.getSelectedItemPosition()==0) {
-                    SavePreferencesString("dil", "Turkish");
-                } else {
-                    SavePreferencesString("dil", "English");
-                }
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                alertDialog.setTitle(""+getContext().getResources().getString(R.string.languagechangetitle));
-                alertDialog.setMessage(""+getContext().getResources().getString(R.string.languagechange));
-                alertDialog.setIcon(R.drawable.smartplug);
-                alertDialog.setPositiveButton(""+getContext().getResources().getString(R.string.yes),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent refresh = new Intent(getContext(), MainActivity.class);
-                                startActivity(refresh);
-                                getActivity().finish();
-                            }
-                        });
-                alertDialog.setNegativeButton(""+getContext().getResources().getString(R.string.no),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                alertDialog.show();
-            }
-        });
+
         btntarifechange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("usertarife");
+                DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("usertarife");
                 if(spntarife.getSelectedItemPosition()==1)
                 {
                     databaseReferencePlug.setValue("T1");
@@ -198,11 +147,6 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-    private void SavePreferencesString(String key, String value) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.commit();
-    }
+
 
 }

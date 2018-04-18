@@ -1,8 +1,6 @@
 package com.thesis.bmm.smartplug;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -32,8 +30,6 @@ import java.util.Date;
 
 public class InterruptRequest {
     Context context;
-    SharedPreferences sharedPreferences ;
-    String  datauserid ;
     private String province, county, neighborhood;
     private String homeURL = "https://guncelkesintiler.com";
     public ArrayList<ElectricityInterrupt> electricityInterruptList = new ArrayList<>();
@@ -46,8 +42,6 @@ public class InterruptRequest {
         this.province = province;
         this.county = district;
         this.neighborhood = region;
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        datauserid= sharedPreferences.getString("userID", "Yok") ;
     }
 
     // status==0 >>NotificationFragment else >>NotificationReceiver
@@ -107,6 +101,7 @@ public class InterruptRequest {
     }
 
     private void interruptExplainRequest(String url, final ElectricityInterrupt electricityInterrupt, final String id) {
+        final FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(context);
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -117,7 +112,7 @@ public class InterruptRequest {
                         Elements p = document.select("p");
                         String content = p.first().text().toString();
                         electricityInterrupt.setExplain(content);
-                        addNewInterruptatFirebase(electricityInterrupt.getExplain().toString(), id);
+                        addNewInterruptatFirebase(electricityInterrupt.getExplain().toString(), id, firebaseUserInformation.getFirebaseUserId());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -133,13 +128,14 @@ public class InterruptRequest {
 
     }
 
-    private void addNewInterruptatFirebase(String explain, String id) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Interrupts");
+    private void addNewInterruptatFirebase(String explain, String id, String firebaseUserId) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("" + firebaseUserId).child("Interrupts");
         databaseReference.child(id).setValue(explain);
     }
 
     public void deleteInterruptatFirebase(String id) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Interrupts");
+        FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(context);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Interrupts");
         databaseReference.child(id).removeValue();
     }
     private String convertMonth(String month) {

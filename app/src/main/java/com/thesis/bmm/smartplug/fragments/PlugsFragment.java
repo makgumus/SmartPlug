@@ -1,9 +1,8 @@
 package com.thesis.bmm.smartplug.fragments;
 
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,9 +17,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thesis.bmm.smartplug.EditPlugDialog;
+import com.thesis.bmm.smartplug.FirebaseUserInformation;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.adapter.RecyclerPlugListAdapter;
 import com.thesis.bmm.smartplug.model.Plugs;
+import com.thesis.bmm.smartplug.services.RealTimeCurrentListenerService;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class PlugsFragment extends Fragment {
     private ArrayList<Plugs> plugsList;
     private View view;
     private FloatingActionButton addNewPlugButton;
+    private static int workingNow = 0;
 
 
     public PlugsFragment() {
@@ -50,6 +52,7 @@ public class PlugsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        plugsList = new ArrayList<>();
         databaseReferencePlugs.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -63,6 +66,14 @@ public class PlugsFragment extends Fragment {
                 recyclerPlugsListView.setLayoutManager(recyclerLayoutManager);
                 plugListAdapter = new RecyclerPlugListAdapter(plugsList, getActivity());
                 recyclerPlugsListView.setAdapter(plugListAdapter);
+                if (plugsList.size() != 0 && workingNow == 0) {
+                    workingNow = 1;
+                    checkCurrentListenerService(1);
+                }
+                if (workingNow == 1 && plugsList.size() == 0) {
+                    workingNow = 0;
+                    checkCurrentListenerService(0);
+                }
             }
 
             @Override
@@ -70,6 +81,7 @@ public class PlugsFragment extends Fragment {
 
             }
         });
+
     }
 
     @Override
@@ -88,17 +100,25 @@ public class PlugsFragment extends Fragment {
 
     }
 
+    private void checkCurrentListenerService(int status) {
+        Intent intent = new Intent(getContext(), RealTimeCurrentListenerService.class);
+        if (status == 1) {
+            getContext().startService(intent);
+        } else {
+            getContext().stopService(intent);
+        }
+
+    }
+
     private void initView() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String  datauserid= sharedPreferences.getString("userID", "Yok") ;
-        databaseReferencePlugs = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Plugs");
         recyclerPlugsListView = view.findViewById(R.id.recycler_plugsList);
         addNewPlugButton = view.findViewById(R.id.addNewPlugButton);
         initEvent();
     }
 
     private void initEvent() {
-        plugsList = new ArrayList<>();
+        FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(getContext());
+        databaseReferencePlugs = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs");
         addNewPlugButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //Intent intent = new Intent(getActivity(), NewPlugActivity.class);

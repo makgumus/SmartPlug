@@ -1,15 +1,12 @@
 package com.thesis.bmm.smartplug.activities;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -29,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.thesis.bmm.smartplug.FirebaseUserInformation;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.model.ElectricitySchedule;
 import com.thesis.bmm.smartplug.model.Plugs;
@@ -38,26 +36,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class GraphicActivity extends AppCompatActivity {
-    Context context = this;
     ArrayList<Entry> entries;
-    private ArrayList<ElectricitySchedule> electricitySchedulesList;
     private LineChart realTimeCurrentGraph;
     private PieChart dailyCurrentGraph;
     private String plugId, plugLiveCurrent;
-    private AppCompatImageView previousDayButton, nextDayButton;
-    private DatabaseReference dr, drPlugs;
-    private TextView calendarTextView, plugCurrentText, useOfMonthlyEnergy;
+    private ImageView previousDayButton, nextDayButton;
+    private DatabaseReference drPieChartData, drPlugs;
+    private TextView calendarTextView, plugCurrentText, useOfMonthlyEnergy, useOfMonthlyCost;
     private Calendar calendar;
     private SimpleDateFormat df;
-    SharedPreferences sharedPreferences ;
-    String  datauserid ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graphic);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        datauserid= sharedPreferences.getString("userID", "Yok") ;
         initView();
     }
 
@@ -69,8 +61,7 @@ public class GraphicActivity extends AppCompatActivity {
         nextDayButton = findViewById(R.id.afterBtn);
         calendarTextView = findViewById(R.id.dateTV);
         useOfMonthlyEnergy = findViewById(R.id.energyTV);
-        nextDayButton.setImageResource(R.drawable.ic_chevron_right_black_24dp);
-        previousDayButton.setImageResource(R.drawable.ic_chevron_left_black_24dp);
+        useOfMonthlyCost = findViewById(R.id.costTV);
         initPieChartStyle();
         initEvent();
     }
@@ -79,8 +70,10 @@ public class GraphicActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         df = new SimpleDateFormat("MM");
         Bundle extras = getIntent().getExtras();
+        FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(getApplicationContext());
         plugId = extras.getString("plugID");
-        drPlugs = FirebaseDatabase.getInstance().getReference().child(""+datauserid).child("Plugs");
+        drPlugs = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs");
+        drPieChartData = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("PieChartData");
         String thisMonth = df.format(calendar.getTime());
         calendarTextView.setText(convertToMonth(thisMonth));
         getPieChartData(checkMonthandDay(thisMonth));
@@ -224,7 +217,7 @@ public class GraphicActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Plugs plugs = dataSnapshot.getValue(Plugs.class);
                 plugLiveCurrent = plugs.getPlugCurrent();
-                plugCurrentText.setText(plugLiveCurrent);
+                plugCurrentText.setText("Akım(A):" + plugLiveCurrent);
                 // addEntry(plugLiveCurrent);
             }
 
@@ -263,15 +256,13 @@ public class GraphicActivity extends AppCompatActivity {
     }
 
     private void getPieChartData(final String month) {
-        electricitySchedulesList = new ArrayList<>();
-        dr = FirebaseDatabase.getInstance().getReference(""+datauserid).child("PieChartData").child(plugId).child(month);
-        dr.addValueEventListener(new ValueEventListener() {
+        drPieChartData.child(plugId).child(month).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                electricitySchedulesList.clear();
                 ElectricitySchedule electricitySchedule = dataSnapshot.getValue(ElectricitySchedule.class);
-                electricitySchedulesList.add(electricitySchedule);
-                drawPieChart(electricitySchedulesList.get(0).getT1(), electricitySchedulesList.get(0).getT2(), electricitySchedulesList.get(0).getT3());
+                drawPieChart(electricitySchedule.getT1(), electricitySchedule.getT2(), electricitySchedule.getT3());
+                useOfMonthlyEnergy.setText(electricitySchedule.getTotalEnergyConsumption());
+                useOfMonthlyCost.setText(electricitySchedule.getCost() + "₺");
             }
 
             @Override
@@ -285,13 +276,13 @@ public class GraphicActivity extends AppCompatActivity {
 
     private void drawPieChart(String t1, String t2, String t3) {
         ArrayList<PieEntry> yValues = new ArrayList<>();
-        yValues.add(new PieEntry(Float.parseFloat(t1), "T1"));
-        yValues.add(new PieEntry(Float.parseFloat(t2), "T2"));
-        yValues.add(new PieEntry(Float.parseFloat(t3), "T3"));
-        PieDataSet dataSet = new PieDataSet(yValues, ""+getResources().getString(R.string.elektricrange));
+        yValues.add(new PieEntry(Float.parseFloat(t1), "Sabah"));
+        yValues.add(new PieEntry(Float.parseFloat(t2), "Puant"));
+        yValues.add(new PieEntry(Float.parseFloat(t3), "Gece"));
+        PieDataSet dataSet = new PieDataSet(yValues, "Elektrik Kullanım Aralıkları");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         PieData pieData = new PieData(dataSet);
         pieData.setValueTextSize(10f);
         pieData.setValueTextColor(Color.BLACK);

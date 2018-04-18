@@ -1,15 +1,33 @@
 package com.thesis.bmm.smartplug.model;
 
 public class ElectricitySchedule {
-    private String T1, T2, T3;
+    private String T1, T2, T3, totalEnergyConsumption, cost;
 
     public ElectricitySchedule() {
     }
 
-    public ElectricitySchedule(String t1, String t2, String t3) {
+    public ElectricitySchedule(String t1, String t2, String t3, String totalEnergy, String fee) {
         T1 = t1;
         T2 = t2;
         T3 = t3;
+        totalEnergyConsumption = totalEnergy;
+        cost = fee;
+    }
+
+    public String getTotalEnergyConsumption() {
+        return totalEnergyConsumption;
+    }
+
+    public void setTotalEnergyConsumption(String totalEnergyConsumption) {
+        this.totalEnergyConsumption = totalEnergyConsumption;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
     }
 
     public String getT1() {

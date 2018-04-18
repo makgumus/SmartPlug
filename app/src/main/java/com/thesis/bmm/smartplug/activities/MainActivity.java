@@ -1,5 +1,6 @@
 package com.thesis.bmm.smartplug.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -7,7 +8,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.adapter.ViewPagerAdapter;
 import com.thesis.bmm.smartplug.app.MultiLanguage;
@@ -18,6 +22,7 @@ import com.thesis.bmm.smartplug.fragments.SettingsFragment;
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
     private TabLayout tabLayout = null;
     public ViewPager vpFragments = null;
+    private ImageView trLang, engLang, logOut;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private void initView() {
         tabLayout = findViewById(R.id.activity_main_tablayout);
         vpFragments = findViewById(R.id.activity_main_vpFragments);
+        trLang = findViewById(R.id.turk_flag);
+        engLang = findViewById(R.id.british_flag);
+        logOut = findViewById(R.id.logOut_btn);
         initEvent();
     }
 
@@ -54,8 +62,40 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         vpFragments.setAdapter(viewpagerAdapter);
         vpFragments.addOnPageChangeListener(this);
         vpFragments.setCurrentItem(0);
+        trLang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SavePreferencesString("dil", "Turkish");
+                Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(refresh);
+                finish();
+            }
+        });
+        engLang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SavePreferencesString("dil", "English");
+                Intent refresh = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(refresh);
+                finish();
+            }
+        });
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
+    private void SavePreferencesString(String key, String value) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
 
 
     @Override

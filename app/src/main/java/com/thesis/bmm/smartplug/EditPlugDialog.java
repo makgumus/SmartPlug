@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -29,12 +27,9 @@ public class EditPlugDialog {
     //int status=0  >> UpdatePlug
     public EditPlugDialog(Context context) {
         this.context = context;
-        SharedPreferences sharedPreferences ;
-        String  datauserid ;
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        datauserid= sharedPreferences.getString("userID", "Yok") ;
-        databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("Plugs");
-        dr = FirebaseDatabase.getInstance().getReference(""+datauserid).child("PieChartData");
+        FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(context);
+        databaseReferencePlug = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs");
+        dr = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("PieChartData");
     }
 
     public void selectPlugDialog(final int status, final String PlugID) {
@@ -122,7 +117,7 @@ public class EditPlugDialog {
 
     private void chartDataatFirebase(String id) {
         for (int i = 1; i <= 12; i++) {
-            ElectricitySchedule schedule = new ElectricitySchedule("0", "0", "0");
+            ElectricitySchedule schedule = new ElectricitySchedule("0", "0", "0", "0", "0");
             dr.child(id).child(String.valueOf(i)).setValue(schedule);
         }
 

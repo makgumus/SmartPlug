@@ -2,15 +2,16 @@ package com.thesis.bmm.smartplug.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,15 +32,18 @@ import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.app.MultiLanguage;
 
 public class LoginActivity extends AppCompatActivity {
-    Button login;
-    TextView signup,forget;
-    AppCompatSpinner electricityuse;
-    EditText editTextEmail, editTextPassword,editpasswordrepeature;
-    CheckBox remember;
-    ProgressBar progressBar;
-    FirebaseUser user;
-    String account;
+    private Button login;
+    private TextView signup, forget;
+    private AppCompatSpinner electricityuse;
+    private EditText editTextEmail, editTextPassword, editpasswordrepeature;
+    private CheckBox remember;
+    private ProgressBar progressBar;
+    private FirebaseUser user;
+    private String account;
     private FirebaseAuth mAuth;
+    private SharedPreferences loginPreferences;
+    private SharedPreferences.Editor loginEditor;
+    private boolean rememberMe;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +68,26 @@ public class LoginActivity extends AppCompatActivity {
         progressBar =  findViewById(R.id.progressbar);
         mAuth = FirebaseAuth.getInstance();
         account=null;
-
+        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginEditor = loginPreferences.edit();
+        rememberMe = loginPreferences.getBoolean("rememberMe", false);
+        if (rememberMe == true) {
+            editTextEmail.setText(loginPreferences.getString("username", ""));
+            remember.setChecked(true);
+        }
+        remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    loginEditor.putBoolean("rememberMe", true);
+                    loginEditor.putString("username", editTextEmail.getText().toString());
+                    loginEditor.commit();
+                } else {
+                    loginEditor.clear();
+                    loginEditor.commit();
+                }
+            }
+        });
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                 registerUser();
             }
         });
+
     }
     private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
@@ -156,13 +180,13 @@ public class LoginActivity extends AppCompatActivity {
                     SavePreferencesString("userID", ""+user.getUid());
                     DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("usertarife");
                     if(electricityuse.getSelectedItemPosition()==1) {
-                        databaseReferencePlug.setValue("T1");
+                        databaseReferencePlug.setValue("Sabah");
                     }
                     if(electricityuse.getSelectedItemPosition()==2) {
-                        databaseReferencePlug.setValue("T2");
+                        databaseReferencePlug.setValue("Puant");
                     }
                     if(electricityuse.getSelectedItemPosition()==3) {
-                        databaseReferencePlug.setValue("T3");
+                        databaseReferencePlug.setValue("Gece");
                     }
                     DatabaseReference databaseReferencePlug2 = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
                     if(account!=null)

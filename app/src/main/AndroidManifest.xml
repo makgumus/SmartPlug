@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"/>
+            android:name=".activities.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <receiver
             android:name=".services.NotificationReceiver"
             android:enabled="true">
@@ -22,8 +23,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.GraphicActivity" />
-        <activity android:name=".activities.LoginActivity"
+        <activity
+            android:name=".activities.GraphicActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activities.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +35,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".services.RealTimeCurrentListenerService" />
     </application>
 
 </manifest>
