@@ -18,6 +18,7 @@ import com.thesis.bmm.smartplug.app.MultiLanguage;
 import com.thesis.bmm.smartplug.fragments.NotificationFragment;
 import com.thesis.bmm.smartplug.fragments.PlugsFragment;
 import com.thesis.bmm.smartplug.fragments.SettingsFragment;
+import com.thesis.bmm.smartplug.services.RealTimeCurrentListenerService;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
     private TabLayout tabLayout = null;
@@ -84,8 +85,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
+                Intent service = new Intent(getApplicationContext(), RealTimeCurrentListenerService.class);
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

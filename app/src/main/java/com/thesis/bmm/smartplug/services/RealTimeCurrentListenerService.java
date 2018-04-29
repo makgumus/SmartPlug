@@ -12,18 +12,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thesis.bmm.smartplug.FirebaseUserInformation;
 import com.thesis.bmm.smartplug.activities.GraphicActivity;
+import com.thesis.bmm.smartplug.model.ElectricitySchedule;
 import com.thesis.bmm.smartplug.model.Plugs;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
 public class RealTimeCurrentListenerService extends Service {
-    private static float T1 = 0, T2 = 0, T3 = 0, totalEnergy = 0, totalCost = 0;
+    private float T1, T2, T3, totalT1, totalT2, totalT3, totalEnergy, totalCost;
     private Calendar now;
+    private ArrayList<Plugs> plugList;
     private SimpleDateFormat dfMonth;
-    private DatabaseReference drPlugs, drPieChartData;
-    private Plugs plug;
+    private DatabaseReference drPlugs, drPieChartData, drUser;
+    private GraphicActivity graphicActivity;
 
     @Nullable
     @Override
@@ -40,11 +43,28 @@ public class RealTimeCurrentListenerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        plugList = new ArrayList<>();
         dfMonth = new SimpleDateFormat("MM");
+        graphicActivity = new GraphicActivity();
         FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(getApplicationContext());
+        drUser = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId());
         drPlugs = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs");
         drPieChartData = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("PieChartData");
-        getCurrent();
+        drPlugs.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                plugList.clear();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Plugs plug = postSnapshot.getValue(Plugs.class);
+                    getCurrent(plug.getPlugID(), plug.getPlugCurrent());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private float calculateEnergy(float current) {
@@ -55,41 +75,100 @@ public class RealTimeCurrentListenerService extends Service {
         return energyConsumption;
     }
 
-    private void getCurrent() {
-
-        drPlugs.child("-LAK7L98xTjGxY7dCtKf").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                plug = dataSnapshot.getValue(Plugs.class);
-                now = Calendar.getInstance();
-                GraphicActivity graphicActivity = new GraphicActivity();
-                final String month = graphicActivity.checkMonthandDay(dfMonth.format(now.getTime()));
-                if (Float.parseFloat(plug.getPlugCurrent()) >= 0) {
+    private void getCurrent(final String plugID, final String plugCurrent) {
+        now = Calendar.getInstance();
+        final String month = graphicActivity.checkMonthandDay(dfMonth.format(now.getTime()));
+        if (Float.parseFloat(plugCurrent) > 0) {
+            drPieChartData.child(plugID).child(month).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
                     int nowHour = now.get(Calendar.HOUR_OF_DAY);
+                    ElectricitySchedule es = dataSnapshot.getValue(ElectricitySchedule.class);
                     if (6 <= nowHour && nowHour < 17) {
-                        T1 += calculateEnergy(Float.parseFloat(plug.getPlugCurrent()));
-                        drPieChartData.child("-LAK7L98xTjGxY7dCtKf").child(month).child("t1").setValue(String.valueOf(T1));
+                        T1 = Float.parseFloat(es.getT1());
+                        T1 += calculateEnergy(Float.parseFloat(plugCurrent));
+                        totalEnergy = T1 + Float.parseFloat(es.getT2()) + Float.parseFloat(es.getT3());
+                        totalCost = (float) (T1 * 0.4463 + Float.parseFloat(es.getT2()) * 0.6769 + Float.parseFloat(es.getT3()) * 0.2797);
+                        drPieChartData.child(plugID).child(month).child("t1").setValue(String.valueOf(T1));
+                        drUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                    if (postSnapshot.getKey().equals("totalT1")) {
+                                        String t1 = postSnapshot.getValue().toString();
+                                        totalT1 = Float.parseFloat(t1);
+                                        drUser.child("totalT1").setValue(String.valueOf(totalT1 + T1));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                     if (17 <= nowHour && nowHour < 22) {
-                        T2 += calculateEnergy(Float.parseFloat(plug.getPlugCurrent()));
-                        drPieChartData.child("-LAK7L98xTjGxY7dCtKf").child(month).child("t2").setValue(String.valueOf(T2));
+                        T2 = Float.parseFloat(es.getT2());
+                        T2 += calculateEnergy(Float.parseFloat(plugCurrent));
+                        totalEnergy = T2 + Float.parseFloat(es.getT1()) + Float.parseFloat(es.getT3());
+                        totalCost = (float) (T2 * 0.4463 + Float.parseFloat(es.getT1()) * 0.6769 + Float.parseFloat(es.getT3()) * 0.2797);
+                        drPieChartData.child(plugID).child(month).child("t2").setValue(String.valueOf(T2));
+                        drUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                    if (postSnapshot.getKey().equals("totalT2")) {
+                                        String t2 = postSnapshot.getValue().toString();
+                                        totalT2 = Float.parseFloat(t2);
+                                        drUser.child("totalT2").setValue(String.valueOf(totalT2 + T2));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                     if (22 <= nowHour || nowHour < 6) {
-                        T3 += calculateEnergy(Float.parseFloat(plug.getPlugCurrent()));
-                        drPieChartData.child("-LAK7L98xTjGxY7dCtKf").child(month).child("t3").setValue(String.valueOf(T3));
+                        T3 = Float.parseFloat(es.getT3());
+                        T3 += calculateEnergy(Float.parseFloat(plugCurrent));
+                        totalEnergy = T3 + Float.parseFloat(es.getT1()) + Float.parseFloat(es.getT2());
+                        totalCost = (float) (T3 * 0.4463 + Float.parseFloat(es.getT1()) * 0.6769 + Float.parseFloat(es.getT2()) * 0.2797);
+                        drPieChartData.child(plugID).child(month).child("t3").setValue(String.valueOf(T3));
+                        drUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                    if (postSnapshot.getKey().equals("totalT3")) {
+                                        String t3 = postSnapshot.getValue().toString();
+                                        totalT3 = Float.parseFloat(t3);
+                                        drUser.child("totalT3").setValue(String.valueOf(totalT3 + T3));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
-                    totalEnergy = T1 + T2 + T3;
-                    totalCost = (float) (T1 * 0.4463 + T2 * 0.6769 + T3 * 0.2797);
-                    drPieChartData.child("-LAK7L98xTjGxY7dCtKf").child(month).child("totalEnergyConsumption").setValue(String.valueOf(String.format("%.2f", totalEnergy)));
-                    drPieChartData.child("-LAK7L98xTjGxY7dCtKf").child(month).child("cost").setValue(String.valueOf(String.format("%.2f", totalCost)));
+                    drPieChartData.child(plugID).child(month).child("totalEnergyConsumption").setValue(String.valueOf(String.format("%.2f", totalEnergy)));
+                    drPieChartData.child(plugID).child(month).child("cost").setValue(String.valueOf(String.format("%.2f", totalCost)));
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+
+        }
+
     }
+
 
 }

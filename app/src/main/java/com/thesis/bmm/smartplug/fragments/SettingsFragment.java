@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 public class SettingsFragment extends Fragment {
     private View view;
     private AppCompatSpinner spntarife;
-    private Button btntarifechange;
     private LocationRequest locationRequest;
     private FloatingActionButton locationAdd;
     private DatabaseReference locationDatabaseReference;
@@ -84,10 +83,9 @@ public class SettingsFragment extends Fragment {
 
     private void initView(View views) {
         locationAdd = views.findViewById(R.id.button_adress_add);
-        spntarife=views.findViewById(R.id.spntarife);
-        btntarifechange=views.findViewById(R.id.btntarifechange);
+        spntarife = views.findViewById(R.id.spntarife);
         AppCompatImageView image2 = views.findViewById(R.id.iv_about2);
-        AppCompatImageView image3 =views.findViewById(R.id.iv_about3);
+        AppCompatImageView image3 = views.findViewById(R.id.iv_about3);
         image2.setImageResource(R.drawable.ic_notifications_active_black_24dp);
         image3.setImageResource(R.drawable.ic_account_circle_black_24dp);
         recyclerLocationsListView = views.findViewById(R.id.recycler_locationsList);
@@ -105,48 +103,50 @@ public class SettingsFragment extends Fragment {
                 locationRequest.selectAdressDialog(1, "null");
             }
         });
-        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("usertarife");
-        databaseReferencePlug.addValueEventListener(new ValueEventListener() {
+        final DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("userSchedule");
+        databaseReferenceUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
-                if(value!=null) {
-                    if (value.equals("T1")) {
-                      spntarife.setSelection(1);
+                if (value != null) {
+                    if (value.equals("Sabah")) {
+                        spntarife.setSelection(1);
                     }
-                    if (value.equals("T2")) {
+                    if (value.equals("Puant")) {
                         spntarife.setSelection(2);
                     }
-                    if (value.equals("T3")) {
+                    if (value.equals("Gece")) {
                         spntarife.setSelection(3);
                     }
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-
-        btntarifechange.setOnClickListener(new View.OnClickListener() {
+        spntarife.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("usertarife");
-                if(spntarife.getSelectedItemPosition()==1)
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 1)
                 {
-                    databaseReferencePlug.setValue("T1");
+                    databaseReferenceUser.setValue("Sabah");
                 }
-                if(spntarife.getSelectedItemPosition()==2)
+                if (position == 2)
                 {
-                    databaseReferencePlug.setValue("T2");
+                    databaseReferenceUser.setValue("Puant");
                 }
-                if(spntarife.getSelectedItemPosition()==3)
+                if (position == 3)
                 {
-                    databaseReferencePlug.setValue("T3");
+                    databaseReferenceUser.setValue("Gece");
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
-
-
 }

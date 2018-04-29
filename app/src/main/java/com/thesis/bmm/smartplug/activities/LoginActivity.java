@@ -1,5 +1,7 @@
 package com.thesis.bmm.smartplug.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -44,30 +46,29 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginEditor;
     private boolean rememberMe;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String  datahighdil = sharedPreferences.getString("dil", "Yok") ;
-        if(datahighdil.equals("Turkish")) {
+        String datahighdil = sharedPreferences.getString("dil", "Yok");
+        if (datahighdil.equals("Turkish")) {
             MultiLanguage.setLocaleTr(LoginActivity.this);
-        }
-        else if(datahighdil.equals("English"))
-        {
+        } else if (datahighdil.equals("English")) {
             MultiLanguage.setLocaleEn(LoginActivity.this);
         }
         setContentView(R.layout.activity_login);
-        editTextEmail=findViewById(R.id.email);
-        editTextPassword=findViewById(R.id.password);
-        editpasswordrepeature=findViewById(R.id.passwordrepeature);
-        login=findViewById(R.id.login);
-        signup=findViewById(R.id.signup);
-        remember=findViewById(R.id.remember);
-        forget=findViewById(R.id.forget);
-        electricityuse=findViewById(R.id.electricityuse);
-        progressBar =  findViewById(R.id.progressbar);
+        editTextEmail = findViewById(R.id.email);
+        editTextPassword = findViewById(R.id.password);
+        editpasswordrepeature = findViewById(R.id.passwordrepeature);
+        login = findViewById(R.id.login);
+        signup = findViewById(R.id.signup);
+        remember = findViewById(R.id.remember);
+        forget = findViewById(R.id.forget);
+        electricityuse = findViewById(R.id.electricityuse);
+        progressBar = findViewById(R.id.progressbar);
         mAuth = FirebaseAuth.getInstance();
-        account=null;
+        account = null;
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginEditor = loginPreferences.edit();
         rememberMe = loginPreferences.getBoolean("rememberMe", false);
@@ -104,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                 editpasswordrepeature.setVisibility(View.VISIBLE);
                 electricityuse.setVisibility(View.VISIBLE);
                 login.setVisibility(View.GONE);
-                forget.setText(""+getResources().getString(R.string.accont));
+                forget.setText("" + getResources().getString(R.string.accont));
                 forget.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -115,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                         signup.setTextColor(getResources().getColor(R.color.white));
                         editpasswordrepeature.setVisibility(View.GONE);
                         electricityuse.setVisibility(View.GONE);
-                        forget.setText(""+getResources().getString(R.string.forgetyourpassword));
+                        forget.setText("" + getResources().getString(R.string.forgetyourpassword));
                     }
                 });
                 login.setBackgroundResource(R.drawable.roundbutton);
@@ -127,110 +128,125 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
     private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String passwordrepeature = editpasswordrepeature.getText().toString().trim();
 
         if (email.isEmpty()) {
-            editTextEmail.setError(""+getResources().getString(R.string.emailrequired));
+            editTextEmail.setError("" + getResources().getString(R.string.emailrequired));
             editTextEmail.requestFocus();
             return;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError(""+getResources().getString(R.string.emailplease));
+            editTextEmail.setError("" + getResources().getString(R.string.emailplease));
             editTextEmail.requestFocus();
             return;
         }
 
         if (password.isEmpty()) {
-            editTextPassword.setError(""+getResources().getString(R.string.passwordrequired));
+            editTextPassword.setError("" + getResources().getString(R.string.passwordrequired));
             editTextPassword.requestFocus();
             return;
         }
 
         if (passwordrepeature.isEmpty()) {
-            editpasswordrepeature.setError(""+getResources().getString(R.string.passwordrequired));
+            editpasswordrepeature.setError("" + getResources().getString(R.string.passwordrequired));
             editpasswordrepeature.requestFocus();
             return;
         }
-        if(password.equals(""+passwordrepeature))
-        {
+        if (password.equals("" + passwordrepeature)) {
 
-        }
-        else{
-            editpasswordrepeature.setError(""+getResources().getString(R.string.passworderror));
+        } else {
+            editpasswordrepeature.setError("" + getResources().getString(R.string.passworderror));
             editpasswordrepeature.requestFocus();
             return;
         }
         if (password.length() < 6) {
-            editTextPassword.setError(""+getResources().getString(R.string.passwordlen));
+            editTextPassword.setError("" + getResources().getString(R.string.passwordlen));
             editTextPassword.requestFocus();
             return;
         }
-
-        progressBar.setVisibility(View.VISIBLE);
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                progressBar.setVisibility(View.GONE);
-                if (task.isSuccessful()) {
-                    user = FirebaseAuth.getInstance().getCurrentUser();
-                    SavePreferencesString("userID", ""+user.getUid());
-                    DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("usertarife");
-                    if(electricityuse.getSelectedItemPosition()==1) {
-                        databaseReferencePlug.setValue("Sabah");
-                    }
-                    if(electricityuse.getSelectedItemPosition()==2) {
-                        databaseReferencePlug.setValue("Puant");
-                    }
-                    if(electricityuse.getSelectedItemPosition()==3) {
-                        databaseReferencePlug.setValue("Gece");
-                    }
-                    DatabaseReference databaseReferencePlug2 = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
-                    if(account!=null)
-                        databaseReferencePlug2.setValue(""+account);
-
-                    finish();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                } else {
-
-                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                        Toast.makeText(getApplicationContext(), ""+getResources().getString(R.string.registed), Toast.LENGTH_SHORT).show();
-
+        if (electricityuse.getSelectedItemPosition() == 0) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setTitle("Uyarı!");
+            alertDialog.setMessage("Elektrik tarifenizi seçmelisiniz!");
+            alertDialog.setIcon(R.drawable.smartplug);
+            alertDialog.setPositiveButton("" + getApplicationContext().getResources().getString(R.string.yes),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+            alertDialog.show();
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    progressBar.setVisibility(View.GONE);
+                    if (task.isSuccessful()) {
+                        user = FirebaseAuth.getInstance().getCurrentUser();
+                        SavePreferencesString("userID", "" + user.getUid());
+                        DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("" + user.getUid());
+                        if (electricityuse.getSelectedItemPosition() == 1) {
+                            databaseReferencePlug.child("userSchedule").setValue("Sabah");
+                        }
+                        if (electricityuse.getSelectedItemPosition() == 2) {
+                            databaseReferencePlug.child("userSchedule").setValue("Puant");
+                        }
+                        if (electricityuse.getSelectedItemPosition() == 3) {
+                            databaseReferencePlug.child("userSchedule").setValue("Gece");
+                        }
+                        if (account != null)
+                            databaseReferencePlug.child("account").setValue("" + account);
+                        databaseReferencePlug.child("totalT1").setValue("0");
+                        databaseReferencePlug.child("totalT2").setValue("0");
+                        databaseReferencePlug.child("totalt3").setValue("0");
+                        finish();
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
                     } else {
-                        Toast.makeText(getApplicationContext(), " "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            Toast.makeText(getApplicationContext(), "" + getResources().getString(R.string.registed), Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), " " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
     }
+
     private void userLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
         if (email.isEmpty()) {
-            editTextEmail.setError(""+getResources().getString(R.string.emailrequired));
+            editTextEmail.setError("" + getResources().getString(R.string.emailrequired));
             editTextEmail.requestFocus();
             return;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError(""+getResources().getString(R.string.emailplease));
+            editTextEmail.setError("" + getResources().getString(R.string.emailplease));
             editTextEmail.requestFocus();
             return;
         }
 
         if (password.isEmpty()) {
-            editTextPassword.setError(""+getResources().getString(R.string.passwordrequired));
+            editTextPassword.setError("" + getResources().getString(R.string.passwordrequired));
             editTextPassword.requestFocus();
             return;
         }
 
         if (password.length() < 6) {
-            editTextPassword.setError(""+getResources().getString(R.string.passwordlen));
+            editTextPassword.setError("" + getResources().getString(R.string.passwordlen));
             editTextPassword.requestFocus();
             return;
         }
@@ -242,10 +258,10 @@ public class LoginActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     user = FirebaseAuth.getInstance().getCurrentUser();
-                    SavePreferencesString("userID", ""+user.getUid());
-                    DatabaseReference databaseReferencePlug2 = FirebaseDatabase.getInstance().getReference(""+user.getUid()).child("account");
-                    if(account!=null)
-                        databaseReferencePlug2.setValue(""+account);
+                    SavePreferencesString("userID", "" + user.getUid());
+                    DatabaseReference databaseReferencePlug2 = FirebaseDatabase.getInstance().getReference("" + user.getUid());
+                    if (account != null)
+                        databaseReferencePlug2.child("account").setValue("" + account);
                     finish();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -256,30 +272,33 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    private void SavePreferencesString(String key, String value){
+
+    private void SavePreferencesString(String key, String value) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.commit();
     }
+
     @Override
     protected void onStart() {
         super.onStart();
         if (mAuth.getCurrentUser() != null) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String  datauserid= sharedPreferences.getString("userID", "Yok") ;
-            DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference(""+datauserid).child("account");
+            String datauserid = sharedPreferences.getString("userID", "Yok");
+            DatabaseReference databaseReferencePlug = FirebaseDatabase.getInstance().getReference("" + datauserid).child("account");
             databaseReferencePlug.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String value = dataSnapshot.getValue(String.class);
-                    if(value!=null) {
+                    if (value != null) {
                         if (value.equals("on")) {
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
@@ -287,13 +306,13 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
+
     public void itemClicked(View v) {
-        CheckBox checkBox = (CheckBox)v;
-        if(checkBox.isChecked()){
-            account="on";
-        }
-        else {
-            account="off";
+        CheckBox checkBox = (CheckBox) v;
+        if (checkBox.isChecked()) {
+            account = "on";
+        } else {
+            account = "off";
         }
     }
 }

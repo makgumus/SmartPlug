@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.thesis.bmm.smartplug.model.ElectricityInterrupt;
+import com.thesis.bmm.smartplug.model.Interrupts;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -44,7 +45,7 @@ public class InterruptRequest {
         this.neighborhood = region;
     }
 
-    // status==0 >>NotificationFragment else >>NotificationReceiver
+    // status==0 >>NotificationFragment else >>InterruptNotificationReceiver
     public void request(final String id) {
         String URL = "https://guncelkesintiler.com/" + province.toLowerCase() + "/elektrik-kesintisi/";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
@@ -67,12 +68,12 @@ public class InterruptRequest {
                             String district = header.split(" ")[3];
                             String region = row.select("p").text().toString();
                             Log.i("dateTimeNowToString()", dateTimeNowToString());
-                            Log.i("district.tolowercase", district.toLowerCase());
-                            Log.i("county.tolowercase", county.toLowerCase());
+                            Log.i("district.tolowercase", forCharacterRevert.convertToCharacter(district));
+                            Log.i("county.tolowercase", forCharacterRevert.convertToCharacter(county));
                             Log.i("region.tolowercase", forCharacterRevert.convertToCharacter(region));
                             Log.i("date", date);
                             Log.i("neighborhod.tolowercase", forCharacterRevert.convertToCharacter(neighborhood));
-                            if (date.equals(dateTimeNowToString()) && district.toLowerCase().equals(county.toLowerCase()) && forCharacterRevert.convertToCharacter(region).contains(forCharacterRevert.convertToCharacter(neighborhood))) {
+                            if (date.equals(dateTimeNowToString()) && forCharacterRevert.convertToCharacter(district).equals(forCharacterRevert.convertToCharacter(county)) && forCharacterRevert.convertToCharacter(region).contains(forCharacterRevert.convertToCharacter(neighborhood))) {
                                 electricityInterrupt.setDate(convertToDate(date));
                                 electricityInterrupt.setProvince(province);
                                 electricityInterrupt.setDistrict(district);
@@ -130,7 +131,8 @@ public class InterruptRequest {
 
     private void addNewInterruptatFirebase(String explain, String id, String firebaseUserId) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("" + firebaseUserId).child("Interrupts");
-        databaseReference.child(id).setValue(explain);
+        Interrupts interrupts = new Interrupts(explain, "08:00", " ");
+        databaseReference.child(id).setValue(interrupts);
     }
 
     public void deleteInterruptatFirebase(String id) {

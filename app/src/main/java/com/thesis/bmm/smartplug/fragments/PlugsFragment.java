@@ -1,6 +1,9 @@
 package com.thesis.bmm.smartplug.fragments;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,30 +25,26 @@ import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.adapter.RecyclerPlugListAdapter;
 import com.thesis.bmm.smartplug.model.Plugs;
 import com.thesis.bmm.smartplug.services.RealTimeCurrentListenerService;
+import com.thesis.bmm.smartplug.services.ScheduleNotificationReceiver;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class PlugsFragment extends Fragment {
     private RecyclerView recyclerPlugsListView;
     private RecyclerView.LayoutManager recyclerLayoutManager;
-    private DatabaseReference databaseReferencePlugs;
+    private DatabaseReference databaseReference;
     private RecyclerPlugListAdapter plugListAdapter;
     private ArrayList<Plugs> plugsList;
     private View view;
     private FloatingActionButton addNewPlugButton;
     private static int workingNow = 0;
-
+    private PendingIntent pendingIntent;
+    private AlarmManager alarmManager;
 
     public PlugsFragment() {
         // Required empty public constructor
-    }
-
-    public static PlugsFragment newInstance(String param1, String param2) {
-        PlugsFragment fragment = new PlugsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
 
@@ -53,10 +52,11 @@ public class PlugsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         plugsList = new ArrayList<>();
-        databaseReferencePlugs.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 plugsList.clear();
+                Calendar cal = Calendar.getInstance();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Plugs plug = postSnapshot.getValue(Plugs.class);
                     plugsList.add(plug);
@@ -69,10 +69,12 @@ public class PlugsFragment extends Fragment {
                 if (plugsList.size() != 0 && workingNow == 0) {
                     workingNow = 1;
                     checkCurrentListenerService(1);
+                    setScheduleNotification(cal);
                 }
                 if (workingNow == 1 && plugsList.size() == 0) {
                     workingNow = 0;
                     checkCurrentListenerService(0);
+                    cancelScheduleNotification();
                 }
             }
 
@@ -118,15 +120,28 @@ public class PlugsFragment extends Fragment {
 
     private void initEvent() {
         FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(getContext());
-        databaseReferencePlugs = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs");
+        databaseReference = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs");
         addNewPlugButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Intent intent = new Intent(getActivity(), NewPlugActivity.class);
-                //startActivity(intent);
                 EditPlugDialog plugDialog = new EditPlugDialog(getActivity());
                 plugDialog.selectPlugDialog(1, null);
             }
         });
+    }
+
+    public void setScheduleNotification(Calendar calendar) {
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 01);
+        calendar.set(Calendar.MINUTE, 20);
+        calendar.set(Calendar.DAY_OF_MONTH, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH));
+        Intent intent = new Intent(getActivity(), ScheduleNotificationReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+        alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 30, pendingIntent);
+    }
+
+    private void cancelScheduleNotification() {
+        alarmManager.cancel(pendingIntent);
     }
 
 }

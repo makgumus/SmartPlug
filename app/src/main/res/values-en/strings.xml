@@ -46,7 +46,7 @@
     <string name = "november">November</string>
     <string name = "december">december</string>
     <string name="languagechange">Are you sure you want to change?</string>
-    <string name="notificationpart">Notification Part</string>
+    <string name="notificationpart">Notification</string>
     <string name="userprofile">User Profile</string>
     <string name="logout">Log Out</string> 
     <string name="address">Address:</string> 
@@ -65,7 +65,7 @@
     <string name="error">Error</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>  
-    <string name="enterthenameoftheplug">Enter the name of the socket!</string>  
+    <string name="enterthenameoftheplug">Choose the device to attach prize!</string>  
     <string name="okey">OK</string>
     <string name="cancel">Cancel</string>  
     <string name="interruption"> There is a power failure on the date</string> 
@@ -73,15 +73,21 @@
     <string name="signup"><u>Sign Up</u></string>
     <string name="forgetyourpassword"><u>Forget your password</u></string> 
     <string name="electrictariff">Electrical Description:</string>
-    <string-array name="array_name">  
+    <string-array name="array_name"> 
         <item>Living Room</item>  
         <item>Bedroom</item>   
         <item>Kitchen</item>   
         <item>Childrens Room</item>     
-        <item>Corridor</item>      
-        <item>Kitchen</item>       
+        <item>Corridor</item>            
         <item>Extra Room</item> 
     </string-array> 
+    <string-array name="array_plugName">
+        <item>Refrigerator</item>
+        <item>Washing Machine</item>
+        <item>Dishwasher</item>
+        <item>TV</item>
+        <item>Other Electronic Devices</item>
+    </string-array>
     <string-array name="array_language">    
         <item>Turkish</item>
         <item>English</item>  

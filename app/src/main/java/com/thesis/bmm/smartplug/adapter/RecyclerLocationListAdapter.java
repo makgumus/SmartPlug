@@ -16,7 +16,7 @@ import com.thesis.bmm.smartplug.InterruptRequest;
 import com.thesis.bmm.smartplug.LocationRequest;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.model.Locations;
-import com.thesis.bmm.smartplug.services.NotificationReceiver;
+import com.thesis.bmm.smartplug.services.InterruptNotificationReceiver;
 
 import java.util.Calendar;
 import java.util.List;
@@ -117,7 +117,7 @@ public class RecyclerLocationListAdapter extends RecyclerView.Adapter<RecyclerLo
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
-        Intent intent = new Intent(context, NotificationReceiver.class);
+        Intent intent = new Intent(context, InterruptNotificationReceiver.class);
         intent.putExtra("LocationID", locationId);
         intent.putExtra("Province", province);
         intent.putExtra("District", district);

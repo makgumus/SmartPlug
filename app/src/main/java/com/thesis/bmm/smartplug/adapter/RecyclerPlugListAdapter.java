@@ -10,15 +10,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.thesis.bmm.smartplug.EditPlugDialog;
 import com.thesis.bmm.smartplug.FirebaseUserInformation;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.activities.GraphicActivity;
+import com.thesis.bmm.smartplug.model.Interrupts;
+import com.thesis.bmm.smartplug.model.Locations;
 import com.thesis.bmm.smartplug.model.Plugs;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -26,8 +33,11 @@ import java.util.List;
  */
 
 public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugListViewHolder> {
-    List<Plugs> plugsList;
-    Context context;
+    private List<Plugs> plugsList;
+    private Context context;
+    private Calendar calendar;
+    private SimpleDateFormat sdf;
+    private DatabaseReference drInterrupt, drLocation;
 
     public RecyclerPlugListAdapter(ArrayList<Plugs> plugsList, Context context) {
         this.plugsList = plugsList;
@@ -42,7 +52,7 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
     }
 
     @Override
-    public void onBindViewHolder(RecyclerPlugListViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerPlugListViewHolder holder, final int position) {
         FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(context);
         final DatabaseReference dr = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs").child(plugsList.get(position).getPlugID());
         final Plugs plug = plugsList.get(position);
@@ -53,10 +63,16 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                 new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-
                         if (isChecked) {
-                            Plugs plugs = new Plugs(plug.getPlugID(), plug.getPlugName(), plug.getPlugRoom(), plug.getPlugCurrent(), true);
-                            dr.setValue(plugs);
+                            if (holder.txtPlugName.getText().equals("Çamaşır Makinesi") || holder.txtPlugName.getText().equals("Washing Machine") || holder.txtPlugName.getText().equals("Bulaşık Makinesi") || holder.txtPlugName.getText().equals("Dishwasher")) {
+                                calendar = Calendar.getInstance();
+                                sdf = new SimpleDateFormat("HH:mm");
+                                String time = sdf.format(calendar.getTime());
+                                getLocation(time, holder, dr, plug);
+                            } else {
+                                Plugs plugs = new Plugs(plug.getPlugID(), plug.getPlugName(), plug.getPlugRoom(), plug.getPlugCurrent(), true);
+                                dr.setValue(plugs);
+                            }
                         } else {
                             Plugs plugs = new Plugs(plug.getPlugID(), plug.getPlugName(), plug.getPlugRoom(), plug.getPlugCurrent(), false);
                             dr.setValue(plugs);
@@ -76,17 +92,17 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                alertDialog.setTitle(""+context.getResources().getString(R.string.plugupdate));
-                alertDialog.setMessage(""+context.getResources().getString(R.string.plugupdateexample));
+                alertDialog.setTitle("" + context.getResources().getString(R.string.plugupdate));
+                alertDialog.setMessage("" + context.getResources().getString(R.string.plugupdateexample));
                 alertDialog.setIcon(R.drawable.smartplug);
-                alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
+                alertDialog.setPositiveButton("" + context.getResources().getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 EditPlugDialog plugDialog = new EditPlugDialog(context);
                                 plugDialog.selectPlugDialog(0, plug.getPlugID());
                             }
                         });
-                alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
+                alertDialog.setNegativeButton("" + context.getResources().getString(R.string.no),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
@@ -99,17 +115,17 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                alertDialog.setTitle(""+context.getResources().getString(R.string.plugdelete));
-                alertDialog.setMessage(""+context.getResources().getString(R.string.plugdeleteexample));
+                alertDialog.setTitle("" + context.getResources().getString(R.string.plugdelete));
+                alertDialog.setMessage("" + context.getResources().getString(R.string.plugdeleteexample));
                 alertDialog.setIcon(R.drawable.smartplug);
-                alertDialog.setPositiveButton(""+context.getResources().getString(R.string.yes),
+                alertDialog.setPositiveButton("" + context.getResources().getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 EditPlugDialog plugDialog = new EditPlugDialog(context);
                                 plugDialog.deletePlugatFirebase(plug.getPlugID());
                             }
                         });
-                alertDialog.setNegativeButton(""+context.getResources().getString(R.string.no),
+                alertDialog.setNegativeButton("" + context.getResources().getString(R.string.no),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
@@ -118,6 +134,82 @@ public class RecyclerPlugListAdapter extends RecyclerView.Adapter<RecyclerPlugLi
                 alertDialog.show();
             }
         });
+    }
+
+    private void getLocation(final String time, final RecyclerPlugListViewHolder holder, final DatabaseReference databaseReference, final Plugs plug) {
+        FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(context);
+        drLocation = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Locations");
+        drLocation.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Locations location = dataSnapshot.getValue(Locations.class);
+                getInterruptNotification(location.getLocationID(), time, holder, databaseReference, plug);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getInterruptNotification(String Id, final String calendar, final RecyclerPlugListViewHolder holder, final DatabaseReference databaseR, final Plugs plug) {
+        FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(context);
+        drInterrupt = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Interrupts");
+        drInterrupt.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Interrupts interrupt = postSnapshot.getValue(Interrupts.class);
+                    if (!interrupt.getStartingTime().equals("")) {
+                        int hourNow = Integer.parseInt(calendar.split(":")[0]);
+                        int minuteNow = Integer.parseInt(calendar.split(":")[1]);
+                        int interruptHour = Integer.parseInt(interrupt.getStartingTime().split(":")[0]);
+                        int interruptMinute = Integer.parseInt(interrupt.getStartingTime().split(":")[1]);
+                        int hourOdds = interruptHour - hourNow;
+                        int mineteOdds = interruptMinute - minuteNow;
+                        if (mineteOdds == 0 && hourOdds == 1) {
+                            getAlert(databaseR, plug, holder);
+                        } else if (hourOdds == 1 && mineteOdds < 0) {
+                            getAlert(databaseR, plug, holder);
+                        } else {
+                            Plugs plugs = new Plugs(plug.getPlugID(), plug.getPlugName(), plug.getPlugRoom(), plug.getPlugCurrent(), true);
+                            databaseR.setValue(plugs);
+                        }
+                    } else {
+                        Plugs plugs = new Plugs(plug.getPlugID(), plug.getPlugName(), plug.getPlugRoom(), plug.getPlugCurrent(), true);
+                        databaseR.setValue(plugs);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getAlert(final DatabaseReference dr, final Plugs plugss, final RecyclerPlugListViewHolder holders) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle("" + context.getResources().getString(R.string.plugupdate));
+        alertDialog.setMessage("" + context.getResources().getString(R.string.plugupdateexample));
+        alertDialog.setIcon(R.drawable.smartplug);
+        alertDialog.setPositiveButton("" + context.getResources().getString(R.string.yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Plugs plugs = new Plugs(plugss.getPlugID(), plugss.getPlugName(), plugss.getPlugRoom(), plugss.getPlugCurrent(), true);
+                        dr.setValue(plugs);
+                    }
+                });
+        alertDialog.setNegativeButton("" + context.getResources().getString(R.string.no),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        holders.plugStatus.setChecked(false);
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.show();
     }
 
     @Override

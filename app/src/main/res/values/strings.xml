@@ -46,7 +46,7 @@
     <string name ="november">Kasım</string>
     <string name ="december">Aralık</string>
     <string name="languagechange">Dili Değiştirmek istediğine emin misin?</string>
-    <string name="notificationpart">Bildirim Kısmı</string>
+    <string name="notificationpart">Bildirim</string>
     <string name="userprofile">Kullanıcı Profili</string>
     <string name="logout">Oturumu Kapat</string>
     <string name="address">Adres:</string>
@@ -65,7 +65,7 @@
     <string name="error">Hata</string>
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
-    <string name="enterthenameoftheplug">Prizin Adını Giriniz</string>
+    <string name="enterthenameoftheplug">Prize Takılacak Cihazı Seçin</string>
     <string name="okey">Tamam</string>
     <string name="cancel">İptal</string>
     <string name="interruption"> Tarihinde elektrik kesintisi var</string>
@@ -73,6 +73,7 @@
     <string name="signup">Kayıt ol</string>
     <string name="electrictariff">Elektrik Tarifeniz:</string>
     <string-array name="array_name">
+        <item>Salon</item>
         <item>Oturma Odası</item>
         <item>Yatak Odası</item>
         <item>Mutfak</item>
@@ -81,15 +82,22 @@
         <item>Mutfak</item>
         <item>Ekstra Oda</item>
     </string-array>
+    <string-array name="array_plugName">
+        <item>Buzdolabı</item>
+        <item>Çamaşır Makinesi</item>
+        <item>Bulaşık Makinesi</item>
+        <item>TV</item>
+        <item>Diğer Elektronik Cihazlar</item>
+    </string-array>
     <string-array name="array_language">
         <item>Türkçe</item>
         <item>İngilizce</item>
     </string-array>
     <string-array name="array_electricitytime">
         <item>Elektrik Tarifenizi Seçiniz</item>
-        <item>Sabah saatleri</item>
-        <item>Öğle saatleri</item>
-        <item>Akşam saatleri</item>
+        <item>Sabah</item>
+        <item>Puant</item>
+        <item>Gece</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

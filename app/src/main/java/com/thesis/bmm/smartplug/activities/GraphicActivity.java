@@ -20,7 +20,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,11 +39,13 @@ public class GraphicActivity extends AppCompatActivity {
     private LineChart realTimeCurrentGraph;
     private PieChart dailyCurrentGraph;
     private String plugId, plugLiveCurrent;
-    private ImageView previousDayButton, nextDayButton;
+    private ImageView previousDayButton, nextDayButton, backMainActivity;
     private DatabaseReference drPieChartData, drPlugs;
     private TextView calendarTextView, plugCurrentText, useOfMonthlyEnergy, useOfMonthlyCost;
     private Calendar calendar;
     private SimpleDateFormat df;
+    private ValueEventListener drPlugsListener, drPieChartListener;
+    private ArrayList<String> openedMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class GraphicActivity extends AppCompatActivity {
         calendarTextView = findViewById(R.id.dateTV);
         useOfMonthlyEnergy = findViewById(R.id.energyTV);
         useOfMonthlyCost = findViewById(R.id.costTV);
+        backMainActivity = findViewById(R.id.back_btn);
         initPieChartStyle();
         initEvent();
     }
@@ -72,11 +74,13 @@ public class GraphicActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         FirebaseUserInformation firebaseUserInformation = new FirebaseUserInformation(getApplicationContext());
         plugId = extras.getString("plugID");
-        drPlugs = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs");
-        drPieChartData = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("PieChartData");
+        drPlugs = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("Plugs").child(plugId);
+        drPieChartData = FirebaseDatabase.getInstance().getReference("" + firebaseUserInformation.getFirebaseUserId()).child("PieChartData").child(plugId);
         String thisMonth = df.format(calendar.getTime());
         calendarTextView.setText(convertToMonth(thisMonth));
         getPieChartData(checkMonthandDay(thisMonth));
+        openedMonth = new ArrayList();
+        openedMonth.add(checkMonthandDay(thisMonth));
         drawCurrentGraph();
         currentDataUpdate();
         previousDayButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +90,7 @@ public class GraphicActivity extends AppCompatActivity {
                 String previousMonth = df.format(calendar.getTime());
                 calendarTextView.setText(convertToMonth(previousMonth));
                 getPieChartData(checkMonthandDay(previousMonth));
+                openedMonth.add(checkMonthandDay(previousMonth));
             }
         });
         nextDayButton.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +100,13 @@ public class GraphicActivity extends AppCompatActivity {
                 String nextMonth = df.format(calendar.getTime());
                 calendarTextView.setText(convertToMonth(nextMonth));
                 getPieChartData(checkMonthandDay(nextMonth));
+                openedMonth.add(checkMonthandDay(nextMonth));
+            }
+        });
+        backMainActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
@@ -106,44 +118,54 @@ public class GraphicActivity extends AppCompatActivity {
         return value;
     }
 
+    @Override
+    public void onBackPressed() {
+        for (int i = 0; i < openedMonth.size(); i++) {
+            drPieChartData.child(openedMonth.get(i)).removeEventListener(drPieChartListener);
+        }
+        drPlugs.removeEventListener(drPlugsListener);
+        super.onBackPressed();
+        finish();
+    }
+
     private String convertToMonth(String monthOfYear) {
         String value = null;
         switch (monthOfYear) {
             case "01":
-                value = ""+getResources().getString(R.string.january);
+                value = "" + getResources().getString(R.string.january);
                 break;
             case "02":
-                value = ""+getResources().getString(R.string.february);
+                value = "" + getResources().getString(R.string.february);
                 break;
             case "03":
-                value = ""+getResources().getString(R.string.march);
+                value = "" + getResources().getString(R.string.march);
                 break;
             case "04":
-                value = ""+getResources().getString(R.string.april);
+                value = "" + getResources().getString(R.string.april);
                 break;
             case "05":
-                value = ""+getResources().getString(R.string.may);
+                value = "" + getResources().getString(R.string.may);
                 break;
             case "06":
-                value = ""+getResources().getString(R.string.june);
+                value = "" + getResources().getString(R.string.june);
                 break;
             case "07":
-                value = ""+getResources().getString(R.string.july);
+                value = "" + getResources().getString(R.string.july);
                 break;
             case "08":
-                value = ""+getResources().getString(R.string.august);
+                value = "" + getResources().getString(R.string.august);
                 break;
             case "09":
-                value = ""+getResources().getString(R.string.september);
+                value = "" + getResources().getString(R.string.september);
                 break;
             case "10":
-                value = ""+getResources().getString(R.string.october);
+                value = "" + getResources().getString(R.string.october);
                 break;
             case "11":
-                value = ""+getResources().getString(R.string.november);
+                value = "" + getResources().getString(R.string.november);
                 break;
             case "12":
-                value = ""+getResources().getString(R.string.december);
+                value = "" + getResources().getString(R.string.december);
                 break;
         }
         return value;
@@ -210,53 +232,46 @@ public class GraphicActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        for (int i = 0; i < openedMonth.size(); i++) {
+            drPieChartData.child(openedMonth.get(i)).removeEventListener(drPieChartListener);
+        }
+        drPlugs.removeEventListener(drPlugsListener);
+        super.onPause();
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        for (int i = 0; i < openedMonth.size(); i++) {
+            drPieChartData.child(openedMonth.get(i)).removeEventListener(drPieChartListener);
+        }
+        drPlugs.removeEventListener(drPlugsListener);
+        super.onStop();
+        finish();
+    }
+
     private void currentDataUpdate() {
-        drPlugs = drPlugs.child(plugId);
-        drPlugs.addValueEventListener(new ValueEventListener() {
+        drPlugsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Plugs plugs = dataSnapshot.getValue(Plugs.class);
                 plugLiveCurrent = plugs.getPlugCurrent();
-                plugCurrentText.setText("Akım(A):" + plugLiveCurrent);
-                // addEntry(plugLiveCurrent);
+                plugCurrentText.setText("Akım:" + plugLiveCurrent + " A");
+                addEntry(plugLiveCurrent);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
-        drPlugs.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                addEntry(plugLiveCurrent);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                addEntry(plugLiveCurrent);
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+        };
+        drPlugs.addValueEventListener(drPlugsListener);
     }
 
     private void getPieChartData(final String month) {
-        drPieChartData.child(plugId).child(month).addValueEventListener(new ValueEventListener() {
+        drPieChartListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ElectricitySchedule electricitySchedule = dataSnapshot.getValue(ElectricitySchedule.class);
@@ -270,8 +285,8 @@ public class GraphicActivity extends AppCompatActivity {
 
             }
 
-        });
-
+        };
+        drPieChartData.child(month).addValueEventListener(drPieChartListener);
     }
 
     private void drawPieChart(String t1, String t2, String t3) {

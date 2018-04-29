@@ -14,11 +14,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.thesis.bmm.smartplug.InterruptRequest;
 import com.thesis.bmm.smartplug.R;
 import com.thesis.bmm.smartplug.adapter.InterruptListAdapter;
-import com.thesis.bmm.smartplug.model.ElectricityInterrupt;
-import com.thesis.bmm.smartplug.model.Locations;
+import com.thesis.bmm.smartplug.model.Interrupts;
 
 import java.util.ArrayList;
 
@@ -26,10 +24,8 @@ import java.util.ArrayList;
 public class NotificationFragment extends Fragment {
     private ListView interruptsListView;
     private View view;
-    private ArrayList<Locations> locationsList;
     private ArrayList<String> interruptList;
-    private InterruptRequest interruptRequest;
-    private ArrayList<ElectricityInterrupt> list;
+
 
     public NotificationFragment() {
 
@@ -57,7 +53,6 @@ public class NotificationFragment extends Fragment {
 
     private void initView() {
         interruptsListView = view.findViewById(R.id.list);
-        locationsList = new ArrayList<>();
         interruptList = new ArrayList<String>();
         getInterruptDatafromFirebase();
     }
@@ -71,8 +66,8 @@ public class NotificationFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 interruptList.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    String interruptExplain = postSnapshot.getValue().toString();
-                    interruptList.add(interruptExplain);
+                    Interrupts interrupt = postSnapshot.getValue(Interrupts.class);
+                    interruptList.add(interrupt.getExplain());
                 }
                 InterruptListAdapter adapter = new InterruptListAdapter(interruptList, getContext());
                 interruptsListView.setAdapter(adapter);

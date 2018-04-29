@@ -3,10 +3,8 @@ package com.thesis.bmm.smartplug;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -17,11 +15,10 @@ import com.thesis.bmm.smartplug.model.ElectricitySchedule;
 import com.thesis.bmm.smartplug.model.Plugs;
 
 public class EditPlugDialog {
-    private ArrayAdapter spinnerRoomAdapter;
+    private ArrayAdapter spinnerRoomAdapter, spinnerPlugNameAdapter;
     private Context context;
-    private DatabaseReference databaseReferencePlug ;
-    private DatabaseReference dr ;
-    private Intent intent;
+    private DatabaseReference databaseReferencePlug;
+    private DatabaseReference dr;
 
     //int status=1  >> AddPlug
     //int status=0  >> UpdatePlug
@@ -41,20 +38,25 @@ public class EditPlugDialog {
             tvMessage[i] = new TextView(context);
         }
         spinnerRoomAdapter = ArrayAdapter.createFromResource(context, R.array.array_name, android.R.layout.simple_spinner_item);
+        spinnerPlugNameAdapter = ArrayAdapter.createFromResource(context, R.array.array_plugName, android.R.layout.simple_spinner_item);
         spinnerRoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        final Spinner spn = new Spinner(context);
-        spn.setAdapter(spinnerRoomAdapter);
+        spinnerPlugNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final Spinner spn[] = new Spinner[2];
+        for (int i = 0; i < spn.length; i++) {
+            spn[i] = new Spinner(context);
+        }
+        spn[0].setAdapter(spinnerRoomAdapter);
+        spn[1].setAdapter(spinnerPlugNameAdapter);
         tvMessage[0].setText("" + context.getResources().getString(R.string.chooseroom));
         tvMessage[1].setText("" + context.getResources().getString(R.string.enterthenameoftheplug));
-        final EditText plugName = new EditText(context);
         for (int i = 0; i < 2; i++) {
             tvMessage[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
         }
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(tvMessage[0]);
-        layout.addView(spn);
-        layout.addView(tvMessage[1]);
-        layout.addView(plugName);
+        for (int i = 0; i < 2; i++) {
+            layout.addView(tvMessage[i]);
+            layout.addView(spn[i]);
+        }
         layout.setPadding(50, 40, 50, 10);
         builder.setView(layout);
         builder.setNegativeButton("" + context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -64,16 +66,11 @@ public class EditPlugDialog {
         });
         builder.setPositiveButton("" + context.getResources().getString(R.string.okey), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if (plugName.getText().toString().length() > 0) {
-                    if (status == 1) {
-                        addNewPlugatFirebase(plugName.getText().toString(), spn.getSelectedItem().toString());
-                    } else {
-                        updatePlugatFirebase(PlugID, plugName.getText().toString(), spn.getSelectedItem().toString());
-                    }
+                if (status == 1) {
+                    addNewPlugatFirebase(spn[1].getSelectedItem().toString(), spn[0].getSelectedItem().toString());
                 } else {
-                    showAlertDialog();
+                    updatePlugatFirebase(PlugID, spn[1].getSelectedItem().toString(), spn[0].getSelectedItem().toString());
                 }
-
             }
         });
         builder.create().show();
@@ -97,24 +94,6 @@ public class EditPlugDialog {
         dr.child(id).removeValue();
     }
 
-    private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("" + context.getResources().getString(R.string.error));
-        builder.setMessage("" + context.getResources().getString(R.string.enterthenameoftheplug));
-        String positiveText = "" + context.getResources().getString(R.string.okey);
-        builder.setPositiveButton(positiveText,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // positive button logic
-                    }
-                });
-
-        AlertDialog dialog = builder.create();
-        // display dialog
-        dialog.show();
-    }
-
     private void chartDataatFirebase(String id) {
         for (int i = 1; i <= 12; i++) {
             ElectricitySchedule schedule = new ElectricitySchedule("0", "0", "0", "0", "0");
@@ -122,4 +101,5 @@ public class EditPlugDialog {
         }
 
     }
+
 }
