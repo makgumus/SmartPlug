@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:text="Tahmini Elektrik Kullanımı"
+        android:text="@string/estimatedelectricusage"
         android:textAlignment="center"
         android:textColor="@android:color/holo_purple"
         android:textSize="24sp"
@@ -107,7 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="Energy"
+                android:text="@string/electric"
                 android:textAppearance="@android:style/TextAppearance"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:text="kWh"
+                android:text="@string/kWh"
                 android:textColor="@android:color/background_dark"
                 android:textSize="12sp"
                 android:textStyle="bold|italic" />
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
-                android:text="Tutar:"
+                android:text="@string/cost"
                 android:textColor="@android:color/holo_purple"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -137,7 +137,7 @@
                 android:id="@+id/costTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="cost"
+                android:text="@string/costt"
                 android:textColor="@android:color/background_dark"
                 android:textSize="18sp"
                 android:textStyle="bold|italic" />
@@ -156,7 +156,7 @@
                 android:layout_height="20dp"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
-                android:background="@drawable/ic_chevron_left_black_24dp" />
+                />
 
             <TextView
                 android:id="@+id/dateTV"
@@ -167,7 +167,7 @@
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="1dp"
                 android:gravity="center"
-                android:text="month"
+                android:text="@string/month"
                 android:textAppearance="@android:style/TextAppearance"
                 android:textColor="@android:color/holo_purple"
                 android:textSize="12sp"
@@ -180,7 +180,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom|left|right|center"
                 android:adjustViewBounds="false"
-                android:background="@drawable/ic_chevron_right_black_24dp" />
+                />
         </LinearLayout>
 
 

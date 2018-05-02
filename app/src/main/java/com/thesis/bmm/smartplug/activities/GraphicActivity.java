@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,13 +40,14 @@ public class GraphicActivity extends AppCompatActivity {
     private LineChart realTimeCurrentGraph;
     private PieChart dailyCurrentGraph;
     private String plugId, plugLiveCurrent;
-    private ImageView previousDayButton, nextDayButton, backMainActivity;
+    private ImageView  backMainActivity;
     private DatabaseReference drPieChartData, drPlugs;
     private TextView calendarTextView, plugCurrentText, useOfMonthlyEnergy, useOfMonthlyCost;
     private Calendar calendar;
     private SimpleDateFormat df;
     private ValueEventListener drPlugsListener, drPieChartListener;
     private ArrayList<String> openedMonth;
+    AppCompatImageView nextDayButton,previousDayButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,8 @@ public class GraphicActivity extends AppCompatActivity {
         useOfMonthlyEnergy = findViewById(R.id.energyTV);
         useOfMonthlyCost = findViewById(R.id.costTV);
         backMainActivity = findViewById(R.id.back_btn);
+        nextDayButton.setImageResource(R.drawable.ic_chevron_right_black_24dp);
+        previousDayButton.setImageResource(R.drawable.ic_chevron_left_black_24dp);
         initPieChartStyle();
         initEvent();
     }
@@ -258,7 +262,7 @@ public class GraphicActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Plugs plugs = dataSnapshot.getValue(Plugs.class);
                 plugLiveCurrent = plugs.getPlugCurrent();
-                plugCurrentText.setText("Akım:" + plugLiveCurrent + " A");
+                plugCurrentText.setText(getResources().getString(R.string.currentt)+"" + plugLiveCurrent + " A");
                 addEntry(plugLiveCurrent);
             }
 
@@ -291,10 +295,10 @@ public class GraphicActivity extends AppCompatActivity {
 
     private void drawPieChart(String t1, String t2, String t3) {
         ArrayList<PieEntry> yValues = new ArrayList<>();
-        yValues.add(new PieEntry(Float.parseFloat(t1), "Sabah"));
-        yValues.add(new PieEntry(Float.parseFloat(t2), "Puant"));
-        yValues.add(new PieEntry(Float.parseFloat(t3), "Gece"));
-        PieDataSet dataSet = new PieDataSet(yValues, "Elektrik Kullanım Aralıkları");
+        yValues.add(new PieEntry(Float.parseFloat(t1), getResources().getString(R.string.morning)+""));
+        yValues.add(new PieEntry(Float.parseFloat(t2), getResources().getString(R.string.puant)+""));
+        yValues.add(new PieEntry(Float.parseFloat(t3), getResources().getString(R.string.night)+""));
+        PieDataSet dataSet = new PieDataSet(yValues, getResources().getString(R.string.electricalusageranges)+"");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);

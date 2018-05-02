@@ -72,6 +72,19 @@
     <string name="login">Gİrİş</string>
     <string name="signup">Kayıt ol</string>
     <string name="electrictariff">Elektrik Tarifeniz:</string>
+    <string name="estimatedelectricusage">Tahmini Elektrik Kullanımı</string>
+    <string name="electric">Enerji:</string>
+    <string name="energy">Energy</string>
+    <string name="kWh">kWh</string>
+    <string name="cost">Tutar:</string>
+    <string name="costt">cost</string>
+    <string name="month">ay</string>
+    <string name="electricalusageranges">Elektrik Kullanım Aralıkları</string>
+    <string name="night">Gece</string>
+    <string name="puant">Puant</string>
+    <string name="morning">Sabah</string>
+    <string name="currentt">Akım:</string>
+    <string name="exit">Çıkış</string>
     <string-array name="array_name">
         <item>Salon</item>
         <item>Oturma Odası</item>
